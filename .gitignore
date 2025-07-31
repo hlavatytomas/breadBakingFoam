@@ -1,3 +1,7 @@
 # -- compilation logs 
 *linux*
 src/finiteVolume/lnInclude
+
+# -- results
+*0 
+*log.*

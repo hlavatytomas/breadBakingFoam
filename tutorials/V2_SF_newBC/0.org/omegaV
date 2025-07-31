@@ -1,0 +1,43 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2312                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    object      omegaV;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 0 0 0 0 0 0];
+
+internalField   uniform 0.01;
+
+boundaryField
+{
+    "(wedgeZ0|wedgeZE)"
+	{
+		type wedge;
+	}   
+    
+    "(sides|bottom)"
+    {
+        type breadOmegaVMixed;
+        kM               0.01; // -- heat transfer coefficient
+        omegaVInf        0;    // -- oven temperature
+
+        // -- mixed BC mandatory entires
+        refValue        uniform 0.01;
+        refGradient     uniform 0;
+        valueFraction   uniform 0;
+        value           uniform 0.01;
+	}
+}
+
+
+// ************************************************************************* //
