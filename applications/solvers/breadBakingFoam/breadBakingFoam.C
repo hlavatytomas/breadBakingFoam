@@ -141,6 +141,8 @@ int main(int argc, char *argv[])
         }
 
         physics().updateTotalFields();
+
+        runTime.printExecutionTime(Info);
         
         runTime.write();
     }
