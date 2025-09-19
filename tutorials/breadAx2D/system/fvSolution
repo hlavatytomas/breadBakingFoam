@@ -35,7 +35,7 @@ solvers
 
 PIMPLE
 {
-    nOuterCorrectors 500;
+    nOuterCorrectors 250;
     debug 0;    // -- debug level
     residualControl
     {
