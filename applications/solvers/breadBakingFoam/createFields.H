@@ -191,6 +191,38 @@ volScalarField evRate
 );
 
 // -- permeability
+volScalarField kGForPerm
+(
+    IOobject
+    (
+        "kGForPerm",
+        runTime.timeName(),
+        physics->mesh(),
+        IOobject::READ_IF_PRESENT,
+        writeOption2
+    ),
+    (1 - 1.1 * (alphaL / (1 - alphaS))),
+    "zeroGradient"
+);
+
+volScalarField nuG
+(
+    IOobject
+    (
+        "nuG",
+        runTime.timeName(),
+        physics->mesh(),
+        IOobject::READ_IF_PRESENT,
+        writeOption2
+    ),
+    1.52451e-6 * Foam::pow(T / dummyT, 1.5) / (T / dummyT + 232.113),
+    "zeroGradient"
+);
+
+// volScalarField kGForPerm = (1 - 1.1 * (alphaL / (1 - alphaS)));
+// volScalarField nuG = 1.52451e-6 * Foam::pow(T / dummyT, 1.5) / (T / dummyT + 232.113);
+
+// -- permeability
 volScalarField permGLViscG
 (
     IOobject
@@ -201,7 +233,7 @@ volScalarField permGLViscG
         IOobject::READ_IF_PRESENT,
         writeOption2
     ),
-    permGLViscGSc * (1 - 1.1 * (alphaL / (1 - alphaS))),
+    permGLViscGSc / nuG * kGForPerm,
     "zeroGradient"
 );
 

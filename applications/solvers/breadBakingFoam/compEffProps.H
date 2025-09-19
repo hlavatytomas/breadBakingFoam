@@ -1,22 +1,33 @@
 // -- calculation of the Darcy permeability, effective difusivity and effective heat conductivity
-volScalarField kGForPerm = (1 - 1.1 * (alphaL / (1 - alphaS))); // -- relative permeability (Zhang Transport Processes and Large Deformation During Baking of Bread 2005)
+kGForPerm = (1 - 1.1 * (alphaL / (1 - alphaS))); // -- relative permeability (Zhang Transport Processes and Large Deformation During Baking of Bread 2005)
 kGForPerm.correctBoundaryConditions();
 volScalarField D = DG * Foam::pow(T / dimensionedScalar("dummyT", dimTemperature, 300), 1.75); // -- mass difusivity at correct temperature
 D.correctBoundaryConditions();
+nuG = 1.52451e-6 * Foam::pow(T / dummyT, 1.5) / (T / dummyT + 232.113);
+nuG.correctBoundaryConditions();
 
-forAll(permGLViscG, cellI)
-{
-    // -- crop for low values of alphaG
-    if(kGForPerm[cellI] > 1e-2)
-    {
-        permGLViscG[cellI] = permGLViscGSc.value() * kGForPerm[cellI] * (1 - alphaS[cellI] - alphaL[cellI]);
-        DEff[cellI] = D[cellI] * Foam::pow(kGForPerm[cellI] * (1 - alphaS[cellI]), 1.333) * (1 - alphaS[cellI] - alphaL[cellI]);
-    }
-    // if((1 - alphaL[cellI] - alphaS[cellI]) > 0.75)
-    // {
-    //     permGLViscG[cellI] = permGLViscG[cellI] * 10;
-    // }
-}
+// forAll(permGLViscG, cellI)
+// {
+//     // -- crop for low values of alphaG
+//     if(kGForPerm[cellI] > 1e-2)
+//     {
+//         // permGLViscG[cellI] = permGLViscGSc.value() * kGForPerm[cellI] * (1 - alphaS[cellI] - alphaL[cellI]);
+//         // DEff[cellI] = D[cellI] * Foam::pow(kGForPerm[cellI] * (1 - alphaS[cellI]), 1.333) * (1 - alphaS[cellI] - alphaL[cellI]);
+//         permGLViscG[cellI] = permGLViscGSc.value() / nuG[cellI] * kGForPerm[cellI];
+//         DEff[cellI] = D[cellI] * Foam::pow(kGForPerm[cellI] * (1 - alphaS[cellI]), 1.333);
+//     }
+//     // if((1 - alphaL[cellI] - alphaS[cellI]) > 0.75)
+//     // {
+//     //     permGLViscG[cellI] = permGLViscG[cellI] * 10;
+//     // }
+// }
+
+permGLViscG = permGLViscGSc / nuG * kGForPerm;
+DEff = D * Foam::pow(kGForPerm * (1 - alphaS), 1.333);
+
+
+// Info << "min(nuG) " << min(nuG).value() << endl;
+// Info << "min(permGLViscG) " << min(permGLViscG).value() << endl;
 
 permGLViscG.correctBoundaryConditions();
 DEff.correctBoundaryConditions();
