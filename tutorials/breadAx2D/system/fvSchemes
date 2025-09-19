@@ -17,21 +17,30 @@ FoamFile
 
 d2dt2Schemes
 {
-    default            steadyState;
+    default             steadyState;
+    // default            backward;
 }
 
 
 ddtSchemes
 {
-    default            Euler;
+    default            backward;
+    // default            CrankNicolson 0.9;
     d2dt2(D_0)         steadyState;
-    d2dt2(D)            steadyState;
-    d2dt2(rho,D_0)      steadyState;
+    d2dt2(D)           steadyState;
+    d2dt2(rho,D_0)     steadyState;
 }
 
 gradSchemes
 {
-    default            Gauss linear;
+    // default            Gauss linear;
+    default            none;
+    grad(pG)           Gauss linear;
+    grad(yV)           Gauss linear;
+    grad(D)            extendedLeastSquares 0.0;
+    grad(Mg)           Gauss linear;
+    grad(omegaV)       Gauss linear;
+    grad(T)            Gauss linear;
 }
 
 divSchemes
@@ -46,7 +55,7 @@ laplacianSchemes
 
 snGradSchemes
 {
-    default            corrected;
+    default             corrected;
 }
 
 interpolationSchemes
@@ -56,7 +65,7 @@ interpolationSchemes
 fluxRequired
 {
     default         no;
-    p;
+    // p;
 }
 
 // ************************************************************************* //
