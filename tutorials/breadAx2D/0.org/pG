@@ -28,7 +28,7 @@ boundaryField
 		type wedge;
 	}
 
-    "(bottom|sides)"
+    "(bottom|sides|sidesOur|bottomOur|topOur)"
     {
         // type breadPGMixed;
         // kM              0.01;   // -- mass transfer coefficient

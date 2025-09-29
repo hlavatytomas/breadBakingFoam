@@ -20,6 +20,7 @@ internalField   uniform 0.01;
 
 boundaryField
 {
+    // Zhang experiment
     "(wedgeZ0|wedgeZE)"
 	{
 		type wedge;
@@ -37,6 +38,54 @@ boundaryField
         valueFraction   uniform 0;
         value           uniform 0.01;
 	}
+
+    // our experiment
+    sidesOur
+    {
+        type breadOmegaVMixed;
+        kM               0.009; // -- heat transfer coefficient
+        omegaVInf        0;    // -- oven temperature
+
+        // -- mixed BC mandatory entires
+        refValue        uniform 0.007;
+        refGradient     uniform 0;
+        valueFraction   uniform 0;
+        value           uniform 0.01;
+	}
+
+    topOur
+    {
+        type breadOmegaVMixed;
+        // kM               0.007; // -- heat transfer coefficient
+        kM               0.008; // -- heat transfer coefficient
+        omegaVInf        0;    // -- oven temperature
+
+        // -- mixed BC mandatory entires
+        refValue        uniform 0.005;
+        refGradient     uniform 0;
+        valueFraction   uniform 0;
+        value           uniform 0.01;
+	}
+
+    bottomOur
+    {
+        type breadOmegaVMixed;
+        // kM               0.001; // -- heat transfer coefficient
+        kM               0.007; // -- heat transfer coefficient
+        omegaVInf        0;    // -- oven temperature
+
+        // -- mixed BC mandatory entires
+        refValue        uniform 0.001;
+        refGradient     uniform 0;
+        valueFraction   uniform 0;
+        value           uniform 0.01;
+	}
+
+    // "(bottomOur|topOur|sidesOur)"
+    // {
+    //     type fixedValue;
+    //     value uniform 1e-6;
+    // }
 }
 
 

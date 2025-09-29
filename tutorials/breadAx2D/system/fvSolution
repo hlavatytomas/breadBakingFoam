@@ -62,11 +62,12 @@ relaxationFactors
     fields
     {
         D 0.1;
-        // omegaV 0.1;
+        // omegaV 0.5;
         // pG 0.1;
     }
     equations
     {
+        // omegaV 0.99;
         // D 0.99;
         // DFinal 0.99;
     }
