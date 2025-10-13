@@ -34,9 +34,9 @@ reactProps
 		c c [0 0 -1 0 0 0 0] 500;
 		d d [0 0 -1 0 0 0 0] 0.5;
 		TOpen TOpen [0 0 0 0 0 0 0] 75;
-		deltaTOpen deltaTOpen [0 0 0 0 0 0 0] 10;
 		kMPCOpen kMPCOpen [0 0 -1 0 0 0 0] 0.5;
 		kMPCClosed kMPCClosed [0 0 -1 0 0 0 0] 0.5;
+		deltaTOpen deltaTOpen [0 0 0 0 0 0 0] 10;
 	}
 }
 

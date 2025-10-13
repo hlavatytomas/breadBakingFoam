@@ -24,10 +24,9 @@ solidModel     breadBakingSolid;
 // solidModel     nonLinearGeometryTotalLagrangianTotalDisplacement;
 
 "nonLinearGeometryTotalLagrangianTotalDisplacementCoeffs|nonLinearGeometryTotalLagrangianTotalDisplacementMyCoeffs|nonLinearGeometryUpdatedLagrangianCoeffs|breadBakingSolidCoeffs"
-// "nonLinearGeometryTotalLagrangianTotalDisplacementCoeffs"
 {
     // Maximum number of momentum correctors
-    nCorrectors           5;
+    nCorrectors           1;
 
     // Solution tolerance for displacement
     solutionTolerance       1e-6;
@@ -43,7 +42,7 @@ solidModel     breadBakingSolid;
 
     // Write frequency for he residuals
     // infoFrequency           5;
-    infoFrequency           1;
+    infoFrequency           2;
 }
 
 // ************************************************************************* //

@@ -37,6 +37,7 @@ gradSchemes
     default            none;
     grad(pG)           Gauss linear;
     grad(yV)           Gauss linear;
+    grad(DD)            extendedLeastSquares 0.0;
     grad(D)            extendedLeastSquares 0.0;
     grad(Mg)           Gauss linear;
     grad(omegaV)       Gauss linear;

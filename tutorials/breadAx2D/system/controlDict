@@ -38,6 +38,8 @@ writeFormat     ascii;
 
 writePrecision  10;
 
+trapFpe true;
+
 writeCompression off;
 
 timeFormat      general;
