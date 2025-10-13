@@ -12,7 +12,7 @@ fvScalarMatrix omegaVEq
 
     // -- diffusion
     - fvm::laplacian(J * Finv & jDVTilda, omegaV)
-    - fvc::laplacian(J * Finv & jDVTilda * omegaV / Mg, Mg)
+    // - fvc::laplacian(J * Finv & jDVTilda * omegaV / Mg, Mg)
     
     // -- evaporation
     + J * evRate

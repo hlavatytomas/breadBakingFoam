@@ -26,7 +26,7 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "breadOmegaVMixed.H"
+#include "breadDSide.H"
 #include "fvPatchFieldMapper.H"
 #include "volFields.H"
 #include "surfaceFields.H"
@@ -35,7 +35,7 @@ License
 // * * * * * * * * * * * * Protected Member Functions  * * * * * * * * * * * //
 
 // template<class Type>
-bool Foam::breadOmegaVMixedFvPatchScalarField::readMixedEntries
+bool Foam::breadDSideFvPatchVectorField::readMixedEntries
 (
     const dictionary& dict,
     IOobjectOption::readOption readOpt
@@ -76,8 +76,7 @@ bool Foam::breadOmegaVMixedFvPatchScalarField::readMixedEntries
     refValue_.assign(*hasValue, p.size());
     refGrad_.assign(*hasGrad, p.size());
     valueFraction_.assign(*hasFrac, p.size());
-    dict.readEntry("kM", kM_);
-    dict.readEntry("omegaVInf", omegaVInf_);
+    dict.readEntry("sidePos", sidePos_);
     return true;
 }
 
@@ -85,13 +84,13 @@ bool Foam::breadOmegaVMixedFvPatchScalarField::readMixedEntries
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 // template<class Type>
-Foam::breadOmegaVMixedFvPatchScalarField::breadOmegaVMixedFvPatchScalarField
+Foam::breadDSideFvPatchVectorField::breadDSideFvPatchVectorField
 (
     const fvPatch& p,
-    const DimensionedField<scalar, volMesh>& iF
+    const DimensionedField<vector, volMesh>& iF
 )
 :
-    fvPatchScalarField(p, iF),
+    fvPatchVectorField(p, iF),
     refValue_(p.size()),
     refGrad_(p.size()),
     valueFraction_(p.size()),
@@ -100,14 +99,14 @@ Foam::breadOmegaVMixedFvPatchScalarField::breadOmegaVMixedFvPatchScalarField
 
 
 // template<class Type>
-Foam::breadOmegaVMixedFvPatchScalarField::breadOmegaVMixedFvPatchScalarField
+Foam::breadDSideFvPatchVectorField::breadDSideFvPatchVectorField
 (
     const fvPatch& p,
-    const DimensionedField<scalar, volMesh>& iF,
+    const DimensionedField<vector, volMesh>& iF,
     const Foam::zero
 )
 :
-    fvPatchScalarField(p, iF),
+    fvPatchVectorField(p, iF),
     refValue_(p.size(), Zero),
     refGrad_(p.size(), Zero),
     valueFraction_(p.size(), Zero),
@@ -116,16 +115,16 @@ Foam::breadOmegaVMixedFvPatchScalarField::breadOmegaVMixedFvPatchScalarField
 
 
 // template<class Type>
-Foam::breadOmegaVMixedFvPatchScalarField::breadOmegaVMixedFvPatchScalarField
+Foam::breadDSideFvPatchVectorField::breadDSideFvPatchVectorField
 (
     const fvPatch& p,
-    const DimensionedField<scalar, volMesh>& iF,
+    const DimensionedField<vector, volMesh>& iF,
     const dictionary& dict,
     IOobjectOption::readOption requireMixed
 )
 :
     // The "value" entry is not required
-    fvPatchScalarField(p, iF, dict, IOobjectOption::NO_READ),
+    fvPatchVectorField(p, iF, dict, IOobjectOption::NO_READ),
     refValue_(p.size()),
     refGrad_(p.size()),
     valueFraction_(p.size()),
@@ -143,15 +142,15 @@ Foam::breadOmegaVMixedFvPatchScalarField::breadOmegaVMixedFvPatchScalarField
 
 
 // template<class Type>
-Foam::breadOmegaVMixedFvPatchScalarField::breadOmegaVMixedFvPatchScalarField
+Foam::breadDSideFvPatchVectorField::breadDSideFvPatchVectorField
 (
-    const breadOmegaVMixedFvPatchScalarField& ptf,
+    const breadDSideFvPatchVectorField& ptf,
     const fvPatch& p,
-    const DimensionedField<scalar, volMesh>& iF,
+    const DimensionedField<vector, volMesh>& iF,
     const fvPatchFieldMapper& mapper
 )
 :
-    fvPatchScalarField(ptf, p, iF, mapper),
+    fvPatchVectorField(ptf, p, iF, mapper),
     refValue_(ptf.refValue_, mapper),
     refGrad_(ptf.refGrad_, mapper),
     valueFraction_(ptf.valueFraction_, mapper),
@@ -170,12 +169,12 @@ Foam::breadOmegaVMixedFvPatchScalarField::breadOmegaVMixedFvPatchScalarField
 
 
 // template<class Type>
-Foam::breadOmegaVMixedFvPatchScalarField::breadOmegaVMixedFvPatchScalarField
+Foam::breadDSideFvPatchVectorField::breadDSideFvPatchVectorField
 (
-    const breadOmegaVMixedFvPatchScalarField& ptf
+    const breadDSideFvPatchVectorField& ptf
 )
 :
-    fvPatchScalarField(ptf),
+    fvPatchVectorField(ptf),
     refValue_(ptf.refValue_),
     refGrad_(ptf.refGrad_),
     valueFraction_(ptf.valueFraction_),
@@ -184,13 +183,13 @@ Foam::breadOmegaVMixedFvPatchScalarField::breadOmegaVMixedFvPatchScalarField
 
 
 // template<class Type>
-Foam::breadOmegaVMixedFvPatchScalarField::breadOmegaVMixedFvPatchScalarField
+Foam::breadDSideFvPatchVectorField::breadDSideFvPatchVectorField
 (
-    const breadOmegaVMixedFvPatchScalarField& ptf,
-    const DimensionedField<scalar, volMesh>& iF
+    const breadDSideFvPatchVectorField& ptf,
+    const DimensionedField<vector, volMesh>& iF
 )
 :
-    fvPatchScalarField(ptf, iF),
+    fvPatchVectorField(ptf, iF),
     refValue_(ptf.refValue_),
     refGrad_(ptf.refGrad_),
     valueFraction_(ptf.valueFraction_),
@@ -201,12 +200,12 @@ Foam::breadOmegaVMixedFvPatchScalarField::breadOmegaVMixedFvPatchScalarField
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
 // template<class Type>
-void Foam::breadOmegaVMixedFvPatchScalarField::autoMap
+void Foam::breadDSideFvPatchVectorField::autoMap
 (
     const fvPatchFieldMapper& m
 )
 {
-    fvPatchScalarField::autoMap(m);
+    fvPatchVectorField::autoMap(m);
     refValue_.autoMap(m);
     refGrad_.autoMap(m);
     valueFraction_.autoMap(m);
@@ -215,16 +214,16 @@ void Foam::breadOmegaVMixedFvPatchScalarField::autoMap
 
 
 // template<class Type>
-void Foam::breadOmegaVMixedFvPatchScalarField::rmap
+void Foam::breadDSideFvPatchVectorField::rmap
 (
-    const fvPatchScalarField& ptf,
+    const fvPatchVectorField& ptf,
     const labelList& addr
 )
 {
-    fvPatchScalarField::rmap(ptf, addr);
+    fvPatchVectorField::rmap(ptf, addr);
 
-    const breadOmegaVMixedFvPatchScalarField& mptf =
-        refCast<const breadOmegaVMixedFvPatchScalarField>(ptf);
+    const breadDSideFvPatchVectorField& mptf =
+        refCast<const breadDSideFvPatchVectorField>(ptf);
 
     refValue_.rmap(mptf.refValue_, addr);
     refGrad_.rmap(mptf.refGrad_, addr);
@@ -234,62 +233,57 @@ void Foam::breadOmegaVMixedFvPatchScalarField::rmap
 
 
 // template<class Type>
-void Foam::breadOmegaVMixedFvPatchScalarField::evaluate(const Pstream::commsTypes)
+void Foam::breadDSideFvPatchVectorField::evaluate(const Pstream::commsTypes)
 {
     if (!this->updated())
     {
         this->updateCoeffs();
     }
 
-    if(this->db().objectRegistry::foundObject<volScalarField>("DEff"))
+    if(this->db().objectRegistry::foundObject<volScalarField>("impK"))
     {
-        IOdictionary transportProperties = this->db().objectRegistry::lookupObject<IOdictionary>("transportProperties");
-        IOdictionary thermophysicalProperties = this->db().objectRegistry::lookupObject<IOdictionary>("thermophysicalProperties");
-        // -- heat transfer to bread computation
-        // -- patch deltaCoeffs
-        scalar molMRef;
-        // dimensionedScalar permGLViscG, univR;
-        dimensionedScalar univR;
-        // transportProperties.readEntry("kGOver",kG);
-        transportProperties.subDict("genProps").readEntry("univR",univR);
+        const volSymmTensorField& sigma = this->db().objectRegistry::lookupObject<volSymmTensorField>("sigma");
+        const volTensorField& gradD = this->db().objectRegistry::lookupObject<volTensorField>("grad(D)");
+        const volTensorField& F = this->db().objectRegistry::lookupObject<volTensorField>("F");
+        const volScalarField& impK = this->db().objectRegistry::lookupObject<volScalarField>("impK");
+        const volScalarField& rImpK = this->db().objectRegistry::lookupObject<volScalarField>("(1|impK)");
+        const volVectorField& D = this->db().objectRegistry::lookupObject<volVectorField>("D");
+        const surfaceVectorField& Cf = patch().boundaryMesh().mesh().Cf();
 
-        // thermophysicalProperties.subDict("solid").readEntry("permGLViscG",permGLViscG);
-        thermophysicalProperties.subDict("mixture").subDict("specie").readEntry("molWeight",molMRef);
-        molMRef = molMRef * 1e-3;
+        symmTensorField sigmaBound = sigma.boundaryField()[patch().index()];
+        tensorField gradDBound = gradD.boundaryField()[patch().index()];
+        scalarField impKBound = impK.boundaryField()[patch().index()];
+        scalarField rImpKBound = rImpK.boundaryField()[patch().index()];
+        tensorField FBound = F.boundaryField()[patch().index()];
+        vectorField DBound = D.boundaryField()[patch().index()];
+        vectorField CfBound = Cf.boundaryField()[patch().index()];
 
-        const volScalarField& perm = this->db().objectRegistry::lookupObject<volScalarField>("permGLViscG");
-        const volScalarField& T = this->db().objectRegistry::lookupObject<volScalarField>("T");
-        const volScalarField& rhoG = this->db().objectRegistry::lookupObject<volScalarField>("rhoG");
-        const volScalarField& Mg = this->db().objectRegistry::lookupObject<volScalarField>("Mg");
-        const volScalarField& pG = this->db().objectRegistry::lookupObject<volScalarField>("pG");
-        const volScalarField& alphaS = this->db().objectRegistry::lookupObject<volScalarField>("alphaS");
-        const volScalarField& alphaL = this->db().objectRegistry::lookupObject<volScalarField>("alphaL");
-        const volScalarField& DEff = this->db().objectRegistry::lookupObject<volScalarField>("DEff");
+        tensorField FinvBound = inv(FBound);
+        vectorField n = patch().nf();
+        vectorField nCurrent = FinvBound.T() & n;
+        nCurrent /= mag(nCurrent);
 
-        scalarField rhoGBound = rhoG.boundaryField()[patch().index()];
-        scalarField permBound = perm.boundaryField()[patch().index()];
-        scalarField DEffmBound = DEff.boundaryField()[patch().index()];
-        scalarField MgBound = Mg.boundaryField()[patch().index()];
-        scalarField MgCells = Mg.boundaryField()[patch().index()].patchInternalField();
-        scalarField TBound = T.boundaryField()[patch().index()];
-        scalarField pGBound = pG.boundaryField()[patch().index()];
-        scalarField pGCells = pG.boundaryField()[patch().index()].patchInternalField();
-                
-        scalarField alphaGBound = 1 - alphaS.boundaryField()[patch().index()] - alphaL.boundaryField()[patch().index()];
-        scalarField K1Bound = rhoGBound * permBound * patch().deltaCoeffs();
-        scalarField K2Bound = rhoGBound * DEff * patch().deltaCoeffs();
+        vectorField gradDForcedBound = (- (nCurrent & sigmaBound) + impKBound * (n & gradDBound)) * rImpKBound;
 
-        // scalarField denominator = K1Bound * (pGBound - pGBound) + K2Bound + K2Bound / MgBound * (MgBound - MgCells) + kM_ * rhoGBound * alphaGBound;
-        // scalarField denominator = K1Bound * (pGBound - pGBound) + K2Bound + K2Bound / MgBound * (MgBound - MgCells) + kM_ * rhoGBound;
-        scalarField denominator = K1Bound * (pGBound - pGBound) + K2Bound + kM_ * rhoGBound;
-        scalarField f = 1 - K2Bound / denominator;
-        scalarField a = (kM_ * rhoGBound * omegaVInf_) / denominator;
-
-        this->valueFraction() = f;
-        this->refValue() = a / f;
+        forAll(CfBound, faceI)
+        {
+            if ((CfBound[faceI][1] + DBound[faceI][1]) > sidePos_ )
+            {
+                this->valueFraction()[faceI] = 1;
+                this->refGrad()[faceI] = vector(0,0,0);
+                vector oprava = DBound[faceI];
+                oprava[1] = sidePos_ - CfBound[faceI][1] * 0.999;
+                this->refValue()[faceI] = oprava;
+            }
+            else
+            {
+                this->valueFraction()[faceI] = 0;
+                this->refGrad()[faceI] = gradDForcedBound[faceI];
+            }
+        }
     }
 
-    scalarField::operator=
+    vectorField::operator=
     (
         lerp
         (
@@ -299,13 +293,13 @@ void Foam::breadOmegaVMixedFvPatchScalarField::evaluate(const Pstream::commsType
         )
     );
 
-    fvPatchScalarField::evaluate();
+    fvPatchVectorField::evaluate();
 }
 
 
 // template<class Type>
-Foam::tmp<Foam::scalarField>
-Foam::breadOmegaVMixedFvPatchScalarField::snGrad() const
+Foam::tmp<Foam::vectorField>
+Foam::breadDSideFvPatchVectorField::snGrad() const
 {
     return lerp
     (
@@ -317,19 +311,19 @@ Foam::breadOmegaVMixedFvPatchScalarField::snGrad() const
 
 
 // template<class Type>
-Foam::tmp<Foam::scalarField>
-Foam::breadOmegaVMixedFvPatchScalarField::valueInternalCoeffs
+Foam::tmp<Foam::vectorField>
+Foam::breadDSideFvPatchVectorField::valueInternalCoeffs
 (
     const tmp<scalarField>&
 ) const
 {
-    return scalar(pTraits<scalar>::one)*(1.0 - valueFraction_);
+    return vector(pTraits<vector>::one)*(1.0 - valueFraction_);
 }
 
 
 // template<class Type>
-Foam::tmp<Foam::scalarField>
-Foam::breadOmegaVMixedFvPatchScalarField::valueBoundaryCoeffs
+Foam::tmp<Foam::vectorField>
+Foam::breadDSideFvPatchVectorField::valueBoundaryCoeffs
 (
     const tmp<scalarField>&
 ) const
@@ -344,16 +338,16 @@ Foam::breadOmegaVMixedFvPatchScalarField::valueBoundaryCoeffs
 
 
 // template<class Type>
-Foam::tmp<Foam::scalarField>
-Foam::breadOmegaVMixedFvPatchScalarField::gradientInternalCoeffs() const
+Foam::tmp<Foam::vectorField>
+Foam::breadDSideFvPatchVectorField::gradientInternalCoeffs() const
 {
-    return -scalar(pTraits<scalar>::one)*valueFraction_*this->patch().deltaCoeffs();
+    return -vector(pTraits<vector>::one)*valueFraction_*this->patch().deltaCoeffs();
 }
 
 
 // template<class Type>
-Foam::tmp<Foam::scalarField>
-Foam::breadOmegaVMixedFvPatchScalarField::gradientBoundaryCoeffs() const
+Foam::tmp<Foam::vectorField>
+Foam::breadDSideFvPatchVectorField::gradientBoundaryCoeffs() const
 {
     return lerp
     (
@@ -363,7 +357,7 @@ Foam::breadOmegaVMixedFvPatchScalarField::gradientBoundaryCoeffs() const
     );
 }
 
-void Foam::breadOmegaVMixedFvPatchScalarField::writeScalarEntry(Foam::Ostream& os, Foam::word name, Foam::scalar value) const
+void Foam::breadDSideFvPatchVectorField::writeScalarEntry(Foam::Ostream& os, Foam::word name, Foam::scalar value) const
 {
     os.write("\n\t\t");
     os.write(name);
@@ -374,24 +368,23 @@ void Foam::breadOmegaVMixedFvPatchScalarField::writeScalarEntry(Foam::Ostream& o
 
 
 // template<class Type>
-void Foam::breadOmegaVMixedFvPatchScalarField::write(Ostream& os) const
+void Foam::breadDSideFvPatchVectorField::write(Ostream& os) const
 {
-    fvPatchScalarField::write(os);
+    fvPatchVectorField::write(os);
     refValue_.writeEntry("refValue", os);
     refGrad_.writeEntry("refGradient", os);
     valueFraction_.writeEntry("valueFraction", os);
     source_.writeEntry("source", os);
-    writeScalarEntry(os, "kM", kM_);
-    writeScalarEntry(os, "omegaVInf", omegaVInf_);
-    fvPatchScalarField::writeValueEntry(os);
+    writeScalarEntry(os, "sidePos", sidePos_);
+    fvPatchVectorField::writeValueEntry(os);
 }
 
 namespace Foam
 {
     makePatchTypeField
     (
-        fvPatchScalarField,
-        breadOmegaVMixedFvPatchScalarField
+        fvPatchVectorField,
+        breadDSideFvPatchVectorField
     );
 }
 
