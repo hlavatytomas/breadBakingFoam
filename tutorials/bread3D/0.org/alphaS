@@ -29,6 +29,10 @@ boundaryField
 	{
 		type wedge;
 	}
+  "symmetryPatch"
+  {
+    type  symmetry;
+  }
 }
 
 // ************************************************************************* //

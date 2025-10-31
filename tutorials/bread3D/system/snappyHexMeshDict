@@ -20,7 +20,8 @@ FoamFile
 // Which of the steps to run
 castellatedMesh true;
 snap            true;
-addLayers       true;
+// addLayers       true;
+addLayers       false;
 
 rxo 9e-2;
 ryo 8.5e-2;
@@ -87,7 +88,7 @@ castellatedMeshControls
     // Number of buffer layers between different levels.
     // 1 means normal 2:1 refinement restriction, larger means slower
     // refinement.
-    nCellsBetweenLevels 4;
+    nCellsBetweenLevels 5;
 
 
 
@@ -121,7 +122,8 @@ castellatedMeshControls
     {
         bottom
         {
-            level (1 1);
+            level (2 2);
+            // level (1 1);
             patchInfo
             {
                 type patch;
@@ -129,7 +131,8 @@ castellatedMeshControls
         }
         sides
         {
-            level (1 1);
+            level (2 2);
+            // level (1 1);
             patchInfo
             {
                 type patch;
@@ -253,11 +256,11 @@ addLayersControls
     {
         sides
         {
-            nSurfaceLayers 3;
+            nSurfaceLayers 4;
         }
         bottom
         {
-            nSurfaceLayers 3;
+            nSurfaceLayers 4;
         }
     }
 
@@ -268,7 +271,7 @@ addLayersControls
     // is the thickness of the layer furthest away from the wall.
     // Relative to undistorted size of cell outside layer.
     // See relativeSizes parameter.
-    finalLayerThickness 0.3;
+    finalLayerThickness 0.25;
 
     // Minimum thickness of cell layer. If for any reason layer
     // cannot be above minThickness do not add layer.

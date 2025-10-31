@@ -27,7 +27,7 @@ boundaryField
     "(sides|bottom)"
     {
         type            breadDFloor;
-        floorPos        -17.5e-3;
+        floorPos        0;
         refValue        uniform (0 0 0);
         refGradient     uniform (0 0 0);
         valueFraction   uniform 1;
@@ -39,11 +39,16 @@ boundaryField
 		type wedge;
 	}
 
-    // "(bottom)"
-    // {
-    //     type            fixedDisplacementZeroShear;
-    //     value           uniform (0 0 0);
-    // }
+    "(bottom)"
+    {
+        type            fixedDisplacementZeroShear;
+        // type            fixedValue;
+        value           uniform (0 0 0);
+    }
+    "symmetryPatch"
+    {
+        type  symmetry;
+    }
 
     // our custom experiment
     sidesOur

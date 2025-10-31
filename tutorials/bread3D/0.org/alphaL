@@ -31,6 +31,10 @@ boundaryField
 	{
         type zeroGradient;
 	}
+  "symmetryPatch"
+  {
+    type  symmetry;
+  }
 }
 
 // ************************************************************************* //
