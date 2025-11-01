@@ -16,7 +16,7 @@ FoamFile
 
 dimensions      [0 0 0 0 0 0 0];
 
-internalField   uniform 7.7e-3;
+internalField   uniform 0.012;
 
 boundaryField
 {
@@ -31,7 +31,6 @@ boundaryField
     {
         type breadOmegaVMixed;
         kM               0.01; // -- heat transfer coefficient
-        omegaVInf        1e-6;    // -- oven temperature
 
         // -- mixed BC mandatory entires
         refValue        uniform 1e-6;
@@ -40,20 +39,28 @@ boundaryField
         value           uniform 1e-6;
         // type fixedValue;
         // value $internalField;
+        omegaVInfTableDict   
+        {
+            file "$FOAM_CASE/constant/omegaVInfTable";
+        }
 	}
 
     // our experiment
     sidesOur
     {
+        // type zeroGradient;
         type breadOmegaVMixed;
         kM               0.009; // -- heat transfer coefficient
-        omegaVInf        7.7e-3;    // -- oven temperature
 
         // -- mixed BC mandatory entires
-        refValue        uniform 7.7e-3;
+        refValue        uniform 0.012;
         refGradient     uniform 0;
         valueFraction   uniform 0;
-        value           uniform 7.7e-3;
+        value           uniform 0.012;
+        omegaVInfTableDict   
+        {
+            file "$FOAM_CASE/constant/omegaVInfTableOur";
+        }
 	}
 
     topOur
@@ -61,13 +68,16 @@ boundaryField
         type breadOmegaVMixed;
         // kM               0.007; // -- heat transfer coefficient
         kM               0.008; // -- heat transfer coefficient
-        omegaVInf        7.7e-3;    // -- oven temperature
 
         // -- mixed BC mandatory entires
-        refValue        uniform 7.7e-3;
+        refValue        uniform 0.012;
         refGradient     uniform 0;
         valueFraction   uniform 0;
-        value           uniform 7.7e-3;
+        value           uniform 0.012;
+        omegaVInfTableDict   
+        {
+            file "$FOAM_CASE/constant/omegaVInfTableOur";
+        }
 	}
 
     bottomOur
@@ -75,13 +85,17 @@ boundaryField
         type breadOmegaVMixed;
         // kM               0.001; // -- heat transfer coefficient
         kM               0.007; // -- heat transfer coefficient
-        omegaVInf        7.7e-3;    // -- oven temperature
 
         // -- mixed BC mandatory entires
-        refValue        uniform 7.7e-3;
+        refValue        uniform 0.012;
         refGradient     uniform 0;
         valueFraction   uniform 0;
-        value           uniform 7.7e-3;
+        value           uniform 0.012;
+        omegaVInfTableDict   
+        {
+            file "$FOAM_CASE/constant/omegaVInfTableOur";
+        }
+        // type zeroGradient;
 	}
 
     // "(bottomOur|topOur|sidesOur)"
