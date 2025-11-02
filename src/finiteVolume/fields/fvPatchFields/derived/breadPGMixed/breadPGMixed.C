@@ -287,7 +287,7 @@ void Foam::breadPGMixedFvPatchScalarField::evaluate(const Pstream::commsTypes)
             // scalarField denominator = K1Bound + kM_ * MgBound / univR.value() / TBound * alphaGBound;
             scalarField denominator = K1Bound + kM_ * MgBound / univR.value() / TBound;
             scalarField f = 1 - K1Bound / denominator;
-            scalarField a = (kM_ * molMRef * pGInf_ / (univR.value() * TInf)) / denominator;
+            scalarField a = (kM_ * MgBound * pGInf_ / (univR.value() * TInf)) / denominator;
 
             this->valueFraction() = f;
             this->refValue() = a / f;
