@@ -33,7 +33,7 @@ boundaryField
         TInfTableDict   
         {
             file "$FOAM_CASE/constant/TInfTable";
-            outOfBounds warp;
+            outOfBounds warn;
         }
 	}
 	
@@ -54,7 +54,7 @@ boundaryField
         TInfTableDict   
         {
             file "$FOAM_CASE/constant/TInfTableOur";
-            outOfBounds warp;
+            outOfBounds warn;
         }
 	}
 
@@ -69,7 +69,7 @@ boundaryField
         TInfTableDict   
         {
             file "$FOAM_CASE/constant/TInfTableOur";
-            outOfBounds warp;
+            outOfBounds warn;
         }
 	}
 }

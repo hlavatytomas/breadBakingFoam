@@ -11,14 +11,22 @@ pathToSolids4Foam="../solids4foam/"
 rsync -r solids4foamAddOns/src $pathToSolids4Foam
 
 # compile solids4foam
+echo "Compiling solids4foam"
 prevPath=$(pwd)
 cd $pathToSolids4Foam
 ./Allwmake
 cd $prevPath
 
 # compile breadBakingFoam
+echo "Compiling breadBakingFoam"
 cd applications/solvers/breadBakingFoam
 wmake
+cd $prevPath
+
+# compile boundary conditions
+echo "Compiling boundary conditions"
+cd src 
+wmake -all 
 cd $prevPath
 
 ########################################################################
