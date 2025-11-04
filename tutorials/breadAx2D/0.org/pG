@@ -61,18 +61,18 @@ boundaryField
 
     topOur
     {
-        // type fixedValue;
-        // value $internalField;
-        type breadPGMixed;
-        // kM               0.007; // -- heat transfer coefficient
-        kM               0.008; // -- heat transfer coefficient
-        pGInf        1e5;    // -- oven temperature
+        type fixedValue;
+        value $internalField;
+        // type breadPGMixed;
+        // // kM               0.007; // -- heat transfer coefficient
+        // kM               0.008; // -- heat transfer coefficient
+        // pGInf        1e5;    // -- oven temperature
 
-        // -- mixed BC mandatory entires
-        refValue        uniform 1e5;
-        refGradient     uniform 0;
-        valueFraction   uniform 0;
-        value           uniform 1e5;
+        // // -- mixed BC mandatory entires
+        // refValue        uniform 1e5;
+        // refGradient     uniform 0;
+        // valueFraction   uniform 0;
+        // value           uniform 1e5;
 	}
 
     bottomOur

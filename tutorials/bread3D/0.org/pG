@@ -94,7 +94,7 @@ boundaryField
         // value $internalField;
         type breadPGMixed;
         // kM               0.001; // -- heat transfer coefficient
-        kM               2e-4; // -- heat transfer coefficient
+        kM               3e-4; // -- heat transfer coefficient
         pGInf        1e5;    // -- oven temperature
 
         // -- mixed BC mandatory entires
