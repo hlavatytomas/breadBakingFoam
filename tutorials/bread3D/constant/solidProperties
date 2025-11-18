@@ -45,28 +45,28 @@ solidModel     breadBakingSolid;
     infoFrequency           2;
 
     // Set displacements of internal cells
-    cellDisplacements
-    {
-        // Set displacement to zero for the cell closest to the centre of the
-        // block
-        cellDisp1
-        {
-            // The cell with the cloest centroid to thi point will be selected
-            approximateCoordinate    (1e-4 0 0);
+    // cellDisplacements
+    // {
+    //     // Set displacement to zero for the cell closest to the centre of the
+    //     // block
+    //     cellDisp1
+    //     {
+    //         // The cell with the cloest centroid to thi point will be selected
+    //         approximateCoordinate    (1e-4 0 0);
 
-            // The prescribed displacement can be constant or time-varying
+    //         // The prescribed displacement can be constant or time-varying
 
-            // Constant displacement
-            displacement             (0 0 0);
+    //         // Constant displacement
+    //         displacement             (0 0 0);
 
-            // Time-varying displacement
-            // timeVaryingDisplacement
-            // {
-            //     "file|fileName" "$FOAM_CASE/constant/timeVsCellDisp3";
-            //     outOfBounds clamp;
-            // }
-        }
-    }
+    //         // Time-varying displacement
+    //         // timeVaryingDisplacement
+    //         // {
+    //         //     "file|fileName" "$FOAM_CASE/constant/timeVsCellDisp3";
+    //         //     outOfBounds clamp;
+    //         // }
+    //     }
+    // }
 }
 
 // ************************************************************************* //

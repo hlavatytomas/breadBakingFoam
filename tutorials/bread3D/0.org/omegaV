@@ -16,7 +16,7 @@ FoamFile
 
 dimensions      [0 0 0 0 0 0 0];
 
-internalField   uniform 0.011;
+internalField   uniform 7.7e-3;
 
 boundaryField
 {
@@ -33,10 +33,10 @@ boundaryField
         kM               0.01; // -- heat transfer coefficient
 
         // -- mixed BC mandatory entires
-        refValue        uniform 1e-6;
+        refValue        uniform 7.7e-3;
         refGradient     uniform 0;
         valueFraction   uniform 0;
-        value           uniform 1e-6;
+        value           uniform 7.7e-3;
         omegaVInfTableDict   
         {
             file "$FOAM_CASE/constant/omegaVInfTable";
@@ -48,10 +48,10 @@ boundaryField
         kM               3e-4; // -- heat transfer coefficient
 
         // -- mixed BC mandatory entires
-        refValue        uniform 1e-6;
+        refValue        uniform 7.7e-3;
         refGradient     uniform 0;
         valueFraction   uniform 0;
-        value           uniform 1e-6;
+        value           uniform 7.7e-3;
         omegaVInfTableDict   
         {
             file "$FOAM_CASE/constant/omegaVInfTable";

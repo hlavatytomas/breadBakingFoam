@@ -42,13 +42,31 @@ geometry
         origin          (0 0 0);
         radius          ($rxo $ryo $rzo);
     }
-    bottom
-    {
-        type            searchableBox;
-        min             (0 -1 -1);
-        max             (1 1 1);
+    // bottom
+    // {
+    //     type            searchableBox;
+    //     min             (0 -1 -1);
+    //     max             (1 1 1);
 
+    // }
+    bunka1
+    {
+        type searchableBox;
+        min (-1 -1 -1);
+        max (1e-2 1 1);
     }
+    // bunka2
+    // {
+    //     type searchableBox;
+    //     min (0 0.0 0.08);
+    //     max (2.5e-2 1e-2 1);
+    // }
+    // bunka3
+    // {
+    //     type searchableBox;
+    //     min (4.5e-2 -1 -1);
+    //     max (1 3e-2 3e-2);
+    // }
 };
 
 
@@ -88,7 +106,7 @@ castellatedMeshControls
     // Number of buffer layers between different levels.
     // 1 means normal 2:1 refinement restriction, larger means slower
     // refinement.
-    nCellsBetweenLevels 5;
+    nCellsBetweenLevels 3;
 
 
 
@@ -120,18 +138,18 @@ castellatedMeshControls
 
     refinementSurfaces
     {
-        bottom
-        {
-            level (2 2);
-            // level (1 1);
-            patchInfo
-            {
-                type patch;
-            }
-        }
+        // bottom
+        // {
+        //     level (2 3);
+        //     // level (1 1);
+        //     patchInfo
+        //     {
+        //         type patch;
+        //     }
+        // }
         sides
         {
-            level (2 2);
+            level (1 1);
             // level (1 1);
             patchInfo
             {
@@ -151,7 +169,7 @@ castellatedMeshControls
     }
 
     // Resolve sharp angles
-    resolveFeatureAngle 10;
+    resolveFeatureAngle 30;
 
 
     // Region-wise refinement
@@ -169,11 +187,23 @@ castellatedMeshControls
 
     refinementRegions
     {
-        // sphere
+        
+        bunka1
+        {
+            mode inside;
+            levels ((1e-5 1));
+            // cellZone rashigs;
+        }
+        // bunka2
         // {
         //     mode inside;
-        //     level 3;
-        //     // levels ((1e-5 2));
+        //     levels ((1e-5 3));
+        //     // cellZone rashigs;
+        // }
+        // bunka3
+        // {
+        //     mode inside;
+        //     levels ((1e-5 3));
         //     // cellZone rashigs;
         // }
 		// steny
@@ -211,25 +241,25 @@ snapControls
 {
     //- Number of patch smoothing iterations before finding correspondence
     //  to surface
-    nSmoothPatch 0;
+    nSmoothPatch 10;
 
     //- Relative distance for points to be attracted by surface feature point
     //  or edge. True distance is this factor times local
     //  maximum edge length.
-    tolerance 5;
+    tolerance 10;
 
     //- Number of mesh displacement relaxation iterations.
-    nSolveIter 0;
+    nSolveIter 50;
 
     //- Maximum number of snapping relaxation iterations. Should stop
     //  before upon reaching a correct mesh.
-    nRelaxIter 5;
+    nRelaxIter 10;
 
     // Feature snapping
 
         //- Number of feature edge snapping iterations.
         //  Leave out altogether to disable.
-        nFeatureSnapIter 10;
+        nFeatureSnapIter 50;
 
         //- Detect (geometric only) features by sampling the surface
         //  (default=false).
