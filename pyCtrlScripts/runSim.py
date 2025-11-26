@@ -75,10 +75,14 @@ E = 12000   # -- Youngs modulus
 timeStep = 1    # -- computational time step
 plusTime1 = 900 # -- how long to run with deformation
 plusTime2 = 0 # -- how long to run without deformation
-writeInt = 20   # -- how often to write results
-nIter = 50  # -- number of iterations in each time step
+writeInt = 1   # -- how often to write results
+nIter = 1  # -- number of iterations in each time step
 dynSolver = 'breadBakingFoam'   # -- used solver
 nCores = 1 # -- number of cores to run the simulation
+
+# -- relaxation factors
+DRelax = 0.1
+DFinalRelax = 1
 
 '''Boundary conditions'''
 kG = 0.01   # -- external mass transfer coeficient
@@ -153,7 +157,9 @@ baseCase.setParameters(
 # 6) fvSolutions
 baseCase.setParameters(
     [
-        ['system/fvSolution', 'nOuterCorrectors', str(nIter), 'PIMPLE']
+        ['system/fvSolution', 'nOuterCorrectors', str(nIter), 'PIMPLE'],
+        ['system/fvSolution', 'D', str(DRelax), 'fields'],
+        ['system/fvSolution', 'DFinal', str(DFinalRelax), 'fields'],
     ]
 )
 
