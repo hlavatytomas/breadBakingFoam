@@ -17,31 +17,24 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-// solidModel     nonLinearGeometryTotalLagrangianTotalDisplacementMy;
-solidModel     breadBakingSolid;
-// solidModel     nonLinearGeometryTotalLagrangianTotalDisplacement;
-// solidModel     nonLinearGeometryUpdatedLagrangian;
-// solidModel     nonLinearGeometryTotalLagrangianTotalDisplacement;
+solidModel     unsBreadBakingSolid;
+// solidModel     breadBakingSolid;
 
-"nonLinearGeometryTotalLagrangianTotalDisplacementCoeffs|nonLinearGeometryTotalLagrangianTotalDisplacementMyCoeffs|nonLinearGeometryUpdatedLagrangianCoeffs|breadBakingSolidCoeffs"
+"unsBreadBakingSolidCoeffs|breadBakingSolidCoeffs"
 {
     // Maximum number of momentum correctors
     nCorrectors           1;
 
     // Solution tolerance for displacement
     solutionTolerance       1e-6;
-    // solutionTolerance       1e-4;
 
     // Alternative solution tolerance for displacement
     alternativeTolerance    1e-6;
-    // alternativeTolerance    1e-4;
 
     // Material law solution tolerance
     materialTolerance       1e-6;
-    // materialTolerance       1e-4;
 
     // Write frequency for he residuals
-    // infoFrequency           5;
     infoFrequency           2;
 }
 
