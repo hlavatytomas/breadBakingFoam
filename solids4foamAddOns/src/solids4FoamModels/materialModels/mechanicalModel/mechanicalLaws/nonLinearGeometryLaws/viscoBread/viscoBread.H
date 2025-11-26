@@ -93,33 +93,6 @@ class viscoBread
         //- Incremental change of plastic strain surface field
         surfaceSymmTensorField DEpsilonPf_;
 
-        //- Elastic left Cauchy-Green trial strain tensor with volumetric term
-        //  removed. Trial means that plasticity is neglected.
-        volSymmTensorField bEbarTrial_;
-
-        //- Elastic left Cauchy-Green trial strain tensor with volumetric term
-        //  removed surface field
-        surfaceSymmTensorField bEbarTrialf_;
-
-        //- Elastic left Cauchy-Green strain tensor with volumetric term removed
-        volSymmTensorField bEbar_;
-
-        //- Elastic left Cauchy-Green strain tensor with volumetric term removed
-        //  surface field
-        surfaceSymmTensorField bEbarf_;
-
-        //- Plastic multiplier increment - plastric strain scaled by sqrt(2/3)
-        volScalarField DLambda_;
-
-        //- Plastic multiplier increment - surface field
-        surfaceScalarField DLambdaf_;
-
-        //- plasticN is the return direction to the yield surface
-        volSymmTensorField plasticN_;
-
-        //- plasticN surface field
-        surfaceSymmTensorField plasticNf_;
-
         //- Maximum allowed error in the plastic strain integration
         const scalar maxDeltaErr_;
 
