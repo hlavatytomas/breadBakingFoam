@@ -13,3 +13,4 @@ ZZ_pythonCtrlScripts
 ZZ_cases
 
 tutorials/*/all*
+*__pycache__*
