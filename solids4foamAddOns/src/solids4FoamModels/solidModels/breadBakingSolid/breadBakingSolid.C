@@ -197,14 +197,14 @@ bool breadBakingSolid::evolve()
     do
     {
         // -- pressure field
-        volScalarField pG = mesh().lookupObject<volScalarField>("pG");
+        const volScalarField& pG = mesh().lookupObject<volScalarField>("pG");
 
         // -- expansion driving force
         volScalarField deltaP = pG - min(pG);
 
         // -- bread composition
-        volScalarField alphaS = mesh().lookupObject<volScalarField>("alphaS");
-        volScalarField alphaL = mesh().lookupObject<volScalarField>("alphaL");
+        const volScalarField& alphaS = mesh().lookupObject<volScalarField>("alphaS");
+        const volScalarField& alphaL = mesh().lookupObject<volScalarField>("alphaL");
 
         // -- bread density
         volScalarField rho = dimensionedScalar("rhoL", dimMass / dimVolume, 1000) * alphaL + dimensionedScalar("rhoS", dimMass / dimVolume, 700) * alphaS;
@@ -283,6 +283,17 @@ bool breadBakingSolid::evolve()
         ) && ++iCorr < nCorr()
     );
 
+#ifdef OPENFOAM_NOT_EXTEND
+    SolverPerformance<vector>::debug = 1;
+#else
+    blockLduMatrix::debug = 1;
+#endif
+
+    return true;
+}
+
+void breadBakingSolid::updateFields()
+{
     // Interpolate cell displacements to vertices
     mechanical().interpolate(D(), gradD(), pointD());
 
@@ -291,14 +302,6 @@ bool breadBakingSolid::evolve()
 
     // Velocity
     U() = fvc::ddt(D());
-
-#ifdef OPENFOAM_NOT_EXTEND
-    SolverPerformance<vector>::debug = 1;
-#else
-    blockLduMatrix::debug = 1;
-#endif
-
-    return true;
 }
 
 

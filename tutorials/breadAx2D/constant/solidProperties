@@ -18,7 +18,7 @@ FoamFile
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 solidModel     unsBreadBakingSolid;
-// solidModel     breadBakingSolid;
+solidModel     breadBakingSolid;
 
 "unsBreadBakingSolidCoeffs|breadBakingSolidCoeffs"
 {

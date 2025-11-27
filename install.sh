@@ -15,7 +15,7 @@ echo "Compiling solids4foam"
 export S4F_NO_FILE_FIXES=1
 prevPath=$(pwd)
 cd $pathToSolids4Foam
-./Allwmake -j
+./Allwmake 
 cd $prevPath
 
 # compile breadBakingFoam

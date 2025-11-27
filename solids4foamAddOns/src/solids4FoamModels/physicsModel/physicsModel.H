@@ -214,6 +214,9 @@ public:
             virtual void updateTotalFields()
             {}
 
+            virtual void updateFields()
+            {}
+
             //- Write fields
             virtual void writeFields(const Time& runTime);
 

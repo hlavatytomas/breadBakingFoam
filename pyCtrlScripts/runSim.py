@@ -17,7 +17,8 @@ import os
 
 # CASE FOLDERS==========================================================
 baseCaseDir = '../tutorials/breadAx2D/' # -- base case for simulation
-outFolder = '../ZZ_cases/00_breads/refZhangSim_new_4'
+outFolder = '../ZZ_cases/00_breads/refZhangSim_new_5'
+# outFolder = '../ZZ_cases/00_breads/refZhangSim_new_4'
 
 # WHAT TO SHOULD RUN====================================================
 prepBlockMesh = True    # -- preparation of the blockMeshDict script
@@ -75,8 +76,8 @@ E = 12000   # -- Youngs modulus
 timeStep = 1    # -- computational time step
 plusTime1 = 900 # -- how long to run with deformation
 plusTime2 = 0 # -- how long to run without deformation
-writeInt = 1   # -- how often to write results
-nIter = 1  # -- number of iterations in each time step
+writeInt = 20   # -- how often to write results
+nIter = 40  # -- number of iterations in each time step
 dynSolver = 'breadBakingFoam'   # -- used solver
 nCores = 1 # -- number of cores to run the simulation
 

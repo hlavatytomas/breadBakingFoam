@@ -32,6 +32,10 @@ boundaryField
         refGradient     uniform (0 0 0);
         valueFraction   uniform 1;
         value           uniform 0;
+        // type            solidTraction;
+        // traction        uniform (0 0 0);
+        // pressure        uniform 0;
+        // value           uniform (0 0 0);
     }
 
     "(wedgeZ0|wedgeZE)"
@@ -39,11 +43,11 @@ boundaryField
 		type wedge;
 	}
 
-    // "(bottom)"
-    // {
-    //     type            fixedDisplacementZeroShear;
-    //     value           uniform (0 0 0);
-    // }
+    "(bottom)"
+    {
+        type            fixedValue;
+        value           uniform (0 0 0);
+    }
 
     // our custom experiment
     sidesOur

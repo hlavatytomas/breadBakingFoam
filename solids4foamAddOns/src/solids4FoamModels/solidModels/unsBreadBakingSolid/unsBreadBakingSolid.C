@@ -385,26 +385,7 @@ bool unsBreadBakingSolid::evolve()
     }
     while (res > curConvergenceTolerance && ++iCorr < nCorr());
 
-    // Velocity
-    U() = fvc::ddt(D());
 
-    // Total deformation gradient
-    F_ = I + gradD().T();
-
-    // Inverse of the deformation gradient
-    Finv_ = inv(F_);
-
-    // Jacobian of the deformation gradient
-    J_ = det(F_);
-
-    // Calculate the stress using run-time selectable mechanical law
-    mechanical().correct(sigma());
-
-    // Increment of displacement
-    DD() = D() - D().oldTime();
-
-    // Increment of point displacement
-    pointDD() = pointD() - pointD().oldTime();
 
     // Print summary of residuals
     Info<< solverPerfD.solverName() << ": Solving for " << D().name()
@@ -427,6 +408,30 @@ bool unsBreadBakingSolid::evolve()
     }
 
     return true;
+}
+
+void unsBreadBakingSolid::updateFields()
+{
+    // Velocity
+    U() = fvc::ddt(D());
+
+    // Total deformation gradient
+    F_ = I + gradD().T();
+
+    // Inverse of the deformation gradient
+    Finv_ = inv(F_);
+
+    // Jacobian of the deformation gradient
+    J_ = det(F_);
+
+    // Calculate the stress using run-time selectable mechanical law
+    mechanical().correct(sigma());
+
+    // Increment of displacement
+    DD() = D() - D().oldTime();
+
+    // Increment of point displacement
+    pointDD() = pointD() - pointD().oldTime();
 }
 
 
