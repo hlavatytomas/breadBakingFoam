@@ -4,7 +4,7 @@ This tutorial shows a two-dimensional internal simulation of the bread in the ov
 2. modified and run by `runBreadAx2D.py` in `pyCtrlScripts/breadAx2D`.
 
 ## Geometry and computational mesh description
-<img width="1687" height="450" alt="twoBreadsLength" src="https://github.com/hlavatytomas/breadBakingFoam/blob/main/docs/twoBreadsLength.png" />
+<img width="1687" height="450" alt="twoBreadsLength" src="twoBreadsLength.png" />
 
 Geometry for the tutorial is taken from the work of Zhang (https://doi.org/10.1002/aic.10518). The computational mesh is prepared using `system/blockMeshDict`, which is pre-prepared in the tutorial case. `blockMeshDict` file with the modified dimesions (radius, height and lenght of the arc) or the computational cell size can be generated using `pyCtrlScripts/runBreadAx2D.py` script by changing `'''Geometry parameters'''` part:
 ```
