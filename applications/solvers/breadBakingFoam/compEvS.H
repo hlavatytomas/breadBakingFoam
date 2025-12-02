@@ -24,7 +24,9 @@ pV = pG * yV;
     volScalarField kMPC = alpha * kMPCOpen + (1 - alpha) * kMPCClosed;
 
     // evRate = kMPC * (1 - alphaL - alphaS) / univR / T * (aw * pSat - pV) * molMV;
-    evRate = kMPC * (1 - alphaL - alphaS) / Foam::pow(J, 0.333) / univR / T * (aw * pSat - pV) * molMV;
+    // evRate = kMPC * (1 - alphaL - alphaS) / Foam::pow(J, 0.333) / univR / T * (aw * pSat - pV) * molMV;
+    // evRate = kMPC * (1 - alphaL - alphaS) / univR / Foam::pow(T / dimensionedScalar("dummyT", dimTemperature, 1), 0.5) / dimensionedScalar("dummyT", dimTemperature, 1) * (aw * pSat - pV) * molMV;
+    evRate = kMPC / univR / Foam::pow(T / dimensionedScalar("dummyT", dimTemperature, 1), 0.5) / dimensionedScalar("dummyT", dimTemperature, 1) * (aw * pSat - pV) * molMV;
 
     // -- equalibrium water vapor presure (Zhang)
     // volScalarField a = 4463.083750 * moisture * Foam::exp(0.007 * T / dummyT - 4.61) * (Foam::pow(moisture * Foam::exp(0.007 * T / dummyT - 4.61), 0.82482));
