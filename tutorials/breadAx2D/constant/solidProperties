@@ -36,7 +36,7 @@ solidModel     breadBakingSolid;
     materialTolerance       1e-6;
 
     // Write frequency for he residuals
-    infoFrequency           2;
+    infoFrequency           1;
 }
 
 // ************************************************************************* //

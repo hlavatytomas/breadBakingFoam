@@ -39,7 +39,7 @@ DFree = 2.2e-6
 # -- heat conductivity of the dough material with porosity 0, i.e. the 
 # -- absolute term in equation (5) in 
 # -- https://doi.org/10.1016/j.fbp.2008.04.002
-lambdaS = 0.447 
+lambdaS = 0.45 
 
 perm = 0.9e-12  # -- bread permeability 
 
@@ -55,7 +55,7 @@ rhoL = 1000  # -- liquid density
 
 '''Evaporation and CO2 generation parameters'''
 # -- evaporation / condensation coeficient in Hertz-Knudsen equation
-kMPC = 0.0238
+kMPC = 0.023
 
 # -- parameters for Oswin model (https://doi.org/10.1016/0260-8774(91)90020-S)
 evCoef1 = -0.0056
@@ -68,7 +68,7 @@ Tm = 314
 
 '''Mechanical properties'''
 withDeformation = 1 # -- turn on (1) /off (0) deformation
-nu = 0.2   # -- Poisson ratio
+nu = 0.15   # -- Poisson ratio
 E = 12000   # -- Youngs modulus
 
 '''Numerics'''
@@ -76,7 +76,7 @@ timeStep = 1    # -- computational time step
 plusTime1 = 880 # -- how long to run with deformation
 plusTime2 = 20 # -- how long to run without deformation
 writeInt = 20   # -- how often to write results
-nIter = 40  # -- number of iterations in each time step
+nIter = 50  # -- number of iterations in each time step
 dynSolver = 'breadBakingFoam'   # -- used solver
 nCores = 4 # -- number of cores to run the simulation
 

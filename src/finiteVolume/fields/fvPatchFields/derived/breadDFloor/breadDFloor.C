@@ -283,7 +283,7 @@ void Foam::breadDFloorFvPatchVectorField::evaluate(const Pstream::commsTypes)
                     this->valueFraction()[faceI] = 1;
                     this->refGrad()[faceI] = vector(0,0,0);
                     vector oprava = DBound[faceI];
-                    oprava[0] = floorPos_ - CfBound[faceI][0]*0.999;
+                    oprava[0] = floorPos_ - CfBound[faceI][0];
                     this->refValue()[faceI] = oprava;
                 }
                 else

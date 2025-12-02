@@ -41,17 +41,17 @@ PIMPLE
     {
         omegaV        
         {
-            tolerance 1e-8;
+            tolerance 1e-5;
             relTol 0;
         }
         T           
         {
-            tolerance 1e-8;
+            tolerance 1e-5;
             relTol 0;
         }
         pG         
         {
-            tolerance 1e-8;
+            tolerance 1e-5;
             relTol 0;
         }
     }
