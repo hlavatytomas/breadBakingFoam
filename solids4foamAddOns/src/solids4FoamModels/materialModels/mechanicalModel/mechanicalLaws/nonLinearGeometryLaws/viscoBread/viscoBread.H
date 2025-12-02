@@ -82,32 +82,34 @@ class viscoBread
         autoPtr<surfaceScalarField> JfPtr_;
 
         //- Total plastic strain
-        volSymmTensorField epsilonP_;
+        // volSymmTensorField epsilonP_;
 
         //- Total plastic strain surface field
-        surfaceSymmTensorField epsilonPf_;
+        // surfaceSymmTensorField epsilonPf_;
 
         //- Incremental change of plastic strain
-        volSymmTensorField DEpsilonP_;
+        // volSymmTensorField DEpsilonP_;
 
         //- Incremental change of plastic strain surface field
         surfaceSymmTensorField DEpsilonPf_;
 
-        //- Maximum allowed error in the plastic strain integration
-        const scalar maxDeltaErr_;
-
-        //- Tolerance for Newton loop
-        static scalar LoopTol_;
-
-        //- Maximum number of iterations for Newton loop
-        static label MaxNewtonIter_;
-
-        //- finiteDiff is the delta for finite difference differentiation
-        static scalar finiteDiff_;
-
-        //- Store sqrt(2/3) as it is used often
-        static scalar sqrtTwoOverThree_;
-
+        volSymmTensorField D0_;
+        surfaceSymmTensorField D0f_;
+        volScalarField T_;
+        volScalarField alphaG_;
+        volScalarField tau_;
+        volTensorField invF_;
+        surfaceTensorField invFf_;
+        volTensorField S_;
+        surfaceTensorField Sf_;
+        volTensorField dEpsPInit_;
+        surfaceTensorField dEpsPInitf_;
+        volTensorField dEpsInit_;
+        surfaceTensorField dEpsInitf_;
+        volSymmTensorField dSigma_;
+        surfaceSymmTensorField dSigmaf_;
+        volSymmTensorField dSigmaP_;
+        surfaceSymmTensorField dSigmaPf_;
 
     // Private Member Functions
 
