@@ -17,11 +17,12 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-solidModel     unsBreadBakingSolid;
+// solidModel     unsBreadBakingSolid;
 solidModel     breadBakingSolid;
 
 "unsBreadBakingSolidCoeffs|breadBakingSolidCoeffs"
 {
+    restart true;
     // Maximum number of momentum correctors
     nCorrectors           1;
 
