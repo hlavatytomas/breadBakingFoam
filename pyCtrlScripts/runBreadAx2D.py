@@ -9,21 +9,20 @@
 import sys
 from OF_caseClass import OpenFOAMCase
 import numpy as np
-import math
 from blockMeshDictClassV8 import *
 from meshGeneration import *
 import re
-import os
+import matplotlib.pyplot as plt
 
 # CASE FOLDERS==========================================================
 baseCaseDir = '../tutorials/breadAx2D/' # -- base case for simulation
-outFolder = '../ZZ_cases/00_breads/refZhangSim_new_5'
-# outFolder = '../ZZ_cases/00_breads/refZhangSim_new_4'
+outFolder = '../ZZ_cases/00_breads/breadAx2D/'
 
-# WHAT TO SHOULD RUN====================================================
+# WHAT SHOULD RUN=======================================================
 prepBlockMesh = True    # -- preparation of the blockMeshDict script
 makeGeom = True # -- creation of the geometry for computation
 runDynSim = True    # -- run simulation
+runPostProcess = True   # -- run post-processing
 
 # DEFINE PARAMETERS=====================================================
 '''Geometry parameters'''
@@ -35,7 +34,7 @@ arcL = 0.008    # -- length of the arc at the side of the bread
 
 '''Internal transport parameters'''
 # -- free volumetric difusivity of the water vapors in CO2 at 300 K
-DFree = 2.22e-6 
+DFree = 2.2e-6 
 
 # -- heat conductivity of the dough material with porosity 0, i.e. the 
 # -- absolute term in equation (5) in 
@@ -56,7 +55,7 @@ rhoL = 1000  # -- liquid density
 
 '''Evaporation and CO2 generation parameters'''
 # -- evaporation / condensation coeficient in Hertz-Knudsen equation
-kMPC = 0.42
+kMPC = 0.0238
 
 # -- parameters for Oswin model (https://doi.org/10.1016/0260-8774(91)90020-S)
 evCoef1 = -0.0056
@@ -64,22 +63,22 @@ evCoef2 = 5.5
 
 # -- pre-exponential factor and Tm in CO2 generation kinetics 
 # -- in equation (32) in https://doi.org/10.1002/aic.10518
-R0 = 22e-4 
+R0 = 23e-4 
 Tm = 314
 
 '''Mechanical properties'''
 withDeformation = 1 # -- turn on (1) /off (0) deformation
-nu = 0.15   # -- Poisson ratio
+nu = 0.2   # -- Poisson ratio
 E = 12000   # -- Youngs modulus
 
 '''Numerics'''
 timeStep = 1    # -- computational time step
-plusTime1 = 900 # -- how long to run with deformation
-plusTime2 = 0 # -- how long to run without deformation
+plusTime1 = 880 # -- how long to run with deformation
+plusTime2 = 20 # -- how long to run without deformation
 writeInt = 20   # -- how often to write results
 nIter = 40  # -- number of iterations in each time step
 dynSolver = 'breadBakingFoam'   # -- used solver
-nCores = 1 # -- number of cores to run the simulation
+nCores = 4 # -- number of cores to run the simulation
 
 # -- relaxation factors
 DRelax = 0.1
@@ -89,7 +88,10 @@ DFinalRelax = 1
 kG = 0.01   # -- external mass transfer coeficient
 alphaG = 10 # -- external heat transfer coeficient 
 
-# SCRIPT (DO NOT EDIT)==================================================                       
+'''Post-processing'''
+fig, axs = plt.subplots(3, 1, figsize=(9, 16))  # figure with plots
+
+# SCRIPT ITSELF (DO NOT EDIT)===========================================                       
 # -- create OpenFOAMCase object to change values in dictionaries
 baseCase = OpenFOAMCase()
 baseCase.loadOFCaseFromBaseCase(baseCaseDir)
@@ -107,11 +109,11 @@ if prepBlockMesh:
     if typeOfMesh == '2DZhang':
         prep2DMeshZhang(arcL, rLoaf, hLoaf, x0, y0, z0, dA, dX, dY, dZ, grX, grY, grZ, baseCase)
 
-# 1) BOUNDARY CONDITIONS ###############################################
-# -- for the different geometries different BC
-# -- most of the BC are set directly in base case
+# CHANGE THE PARAMETERS IN OPENFOAM DICTIONARIES========================
+# 1) BOUNDARY CONDITIONS
+# -- change in tutorial case
 
-# 2) constant/transportProperties ######################################
+# 2) constant/transportProperties
 baseCase.setParameters(
     [
         ['constant/transportProperties', 'withDeformation', str(withDeformation), ''],
@@ -119,7 +121,7 @@ baseCase.setParameters(
     ]
 )
 
-# 3) constant/thermophysicalProperties #################################
+# 3) constant/thermophysicalProperties
 baseCase.setParameters(
     [
         ['constant/thermophysicalProperties', 'lambda', str(lambdaS), 'solid'],
@@ -133,7 +135,7 @@ baseCase.setParameters(
     ]
 )
 
-# 4) constant/reactiveProperties #######################################
+# 4) constant/reactiveProperties
 # -- parameters for evaporation and CO2 generation
 baseCase.setParameters(
     [
@@ -146,7 +148,7 @@ baseCase.setParameters(
     ]
 )
         
-# 5 system/controlDict #############################################
+# 5 system/controlDict
 baseCase.setParameters(
     [
         ['system/controlDict', 'endTime', str(plusTime1), ''],
@@ -164,7 +166,7 @@ baseCase.setParameters(
     ]
 )
 
-# 7) mechanical properties 
+# 7) mechanical properties
 baseCase.setParameters(
     [
         ['constant/mechanicalProperties', 'nu', str(nu), 'bread'],
@@ -185,7 +187,7 @@ if makeGeom:
             ]
         )
 
-# -- run the simulation
+# RUN THE SIMULATION====================================================
 if runDynSim:
     if nCores > 1:
         baseCase.setParameters(
@@ -207,7 +209,7 @@ if runDynSim:
         )
 
     # -- run the rest of the simualation without further deformation
-    if plusTime2 > plusTime1:
+    if plusTime2 > 0:
         baseCase.setParameters(
             [
                 ['system/controlDict', 'endTime', str(plusTime1 + plusTime2), ''],
@@ -221,108 +223,127 @@ if runDynSim:
                 ]
             )
         else:
-            baseCase.updateTimes()
             baseCase.runCommands(
                 [
                     '%s > log.%s_2' %(dynSolver,dynSolver),
                 ]
             )
-
-exp = np.loadtxt('plots/exp_mouk_center.dat', delimiter=';')
-exp2 = np.loadtxt('plots/exp_mouk_surface.dat', delimiter=';')
-expD = np.loadtxt('plots/exp_zhang_D.dat', skiprows=1)
-baseCase.updateTimes()
-baseCase.runCommands(
-    [
-        'postProcess -func "probeZhang" -dict system/probeZhang > log.postProcess',
-        'rm -rf 0',
-        'intMoisture > log.intMoisture',
-        'intVolume > log.intVolume',
-    ]
-)
-rows = []
-lines = []
-D = []
-with open(baseCase.dir + '/postProcessing/probeZhang/%d/D'%baseCase.latestTime, 'r') as fl:
-    lines = fl.readlines()
-    lines = lines[nProbes+2:]
-    # print(lines)
-    for line in lines:
-        parts = line.split(") (")
-        first_entry = parts[0].split(maxsplit=1)
-        vectors = [first_entry[1]] if len(first_entry) > 1 else []
-        vectors.extend(parts[1:])
-
-        vectors = [
-            tuple(map(float, vec.replace("(", "").replace(")", "").split()))
-            for vec in vectors
-        ]
-        rows.append(vectors)
-
-# Convert to numpy array
-D = np.array(rows)
-# print(D)
+        
+# POST-PROCESSING=======================================================
+if runPostProcess:
+    # -- load the experimental data
+    TExpCenter = np.loadtxt(baseCaseDir + 'ZZ_dataForPostProcessing/exp_Zhang_center.dat', delimiter=';')
+    TExpSurface = np.loadtxt(baseCaseDir + 'ZZ_dataForPostProcessing/exp_Zhang_surface.dat', delimiter=';')
+    DExp = np.loadtxt(baseCaseDir + 'ZZ_dataForPostProcessing/exp_Zhang_D.dat', skiprows=1)
+    moistureExp = np.loadtxt(baseCaseDir + 'ZZ_dataForPostProcessing/exp_Zhang_moisture.dat', skiprows=1, delimiter=';')
     
-# -- load prof
-probesT = np.loadtxt(baseCase.dir + '/postProcessing/probeZhang/%d/T'%baseCase.latestTime, skiprows=3)
+    # -- run post-processing tasks
+    if nCores == 1:
+        baseCase.updateTimes()
+        baseCase.runCommands(
+            [
+                'postProcess -func "probeZhang" -dict system/probeZhang > log.postProcess',
+                'rm -rf 0',
+                'intMoisture > log.intMoisture',
+            ]
+        )
+    else:
+        baseCase.updateTimesParallel()
+        baseCase.runCommands(
+            [
+                'foamJob -parallel -screen postProcess -func "probeZhang" -dict system/probeZhang > log.postProcess',
+                'rm -rf processor*/0',
+                'foamJob -parallel -screen intMoisture > log.intMoisture',
+            ]
+        )
 
-point1 = probesT[0:,1]
-point2 = probesT[0:,2]
+    # -- gather the displacement data from probe points
+    rows = []
+    lines = []
+    D = []
+    nProbes = 3
+    if nCores > 1:
+        latestTime = baseCase.latestParTime
+    else:
+        latestTime  = baseCase.latestTime
+    with open(baseCase.dir + '/postProcessing/probeZhang/%d/D'%latestTime, 'r') as fl:
+        lines = fl.readlines()
+        lines = lines[nProbes+2:]
+        # print(lines)
+        for line in lines:
+            parts = line.split(") (")
+            first_entry = parts[0].split(maxsplit=1)
+            vectors = [first_entry[1]] if len(first_entry) > 1 else []
+            vectors.extend(parts[1:])
 
-time = (probesT[0:,0])/60
+            vectors = [
+                tuple(map(float, vec.replace("(", "").replace(")", "").split()))
+                for vec in vectors
+            ]
+            rows.append(vectors)
 
-# Read the file
-file_path = "%s/log.intMoisture" %baseCase.dir
-skiprows = 26
-with open(file_path, "r") as file:
-    lines = file.readlines()
+    # -- Convert displacements to numpy array
+    D = np.array(rows)
+        
+    # -- Load temperature profiles in probe points
+    probesT = np.loadtxt(baseCase.dir + '/postProcessing/probeZhang/%d/T'%latestTime, skiprows=3)
 
-# Extract all numbers using regex
-numbers = []
-for lineI in range(skiprows, len(lines)):
-    line = lines[lineI]
-    matches = re.findall(r"[-+]?\d*\.\d+|[-+]?\d+", line)  # Matches integers and decimals
-    numbers.extend(map(float, matches))  # Convert to float and add to the list
+    # -- Load total moisture evolution 
+    file_path = "%s/log.intMoisture" %baseCase.dir
+    skiprows = -1
+    endLine = -1
+    with open(file_path, "r") as file:
+        lines = file.readlines()
+    for lineI in range(len(lines)):
+        if 'Time = ' in lines[lineI]:
+            skiprows = lineI
+            break
+    for lineI in range(len(lines)):
+        if 'End' in lines[lineI]:
+            endLine = lineI
+            break
 
-# Convert the list to a NumPy array
-moistureSim = np.array(numbers).reshape(-1,2)
-# if not os.path.exists(vystupy + vystup):
-#     os.makedirs(vystupy + vystup)
-# np.savetxt(vystupy + vystup + '/moisture.dat', moistureSim, header="time\tmoisture", comments="", delimiter="\t")
-# np.savetxt(vystupy + vystup + '/temps.dat', probesT, header="time\tcenter\tsurface", comments="", delimiter="\t")
+    # Extract all numbers using regex
+    numbers = []
+    for lineI in range(skiprows, endLine):
+        line = lines[lineI]
+        matches = re.findall(r"[-+]?\d*\.\d+|[-+]?\d+", line)  # Matches integers and decimals
+        numbers.extend(map(float, matches))  # Convert to float and add to the list
 
+    # Convert the list to a NumPy array
+    moistureSim = np.array(numbers).reshape(-1,2)
 
-moistureExp = np.loadtxt('plots/liquidMassExp.dat', skiprows=1, delimiter=';')
+    # -- Temperatures
+    axs[0].plot(TExpCenter[:,0],TExpCenter[:,1], 'xr',  label='center temperature experiment')
+    axs[0].plot(TExpSurface[:,0],TExpSurface[:,1], 'xb', label='surface temperature experiment')
+    axs[0].plot(probesT[:,0] / 60, probesT[:,1] - 273, 'r', label='center temperature simulation')
+    axs[0].plot(probesT[:,0] / 60, probesT[:,2] - 273, 'b', label='center temperature simulation')
+    axs[0].set_xlabel("time (min)")
+    axs[0].set_ylabel("T (°C)")
+    axs[0].set_xlim(0, 15)
+    axs[0].set_title("Temperature evolution in the center and at the surface")
+    axs[0].legend()
 
-# Read the file
-file_path = "%s/log.intVolume" %baseCase.dir
-skiprows = 26
-with open(file_path, "r") as file:
-    lines = file.readlines()
+    # -- Moisture
+    axs[1].plot(moistureSim[:,0] / 60, moistureSim[:,1], 'b', label='simulation')
+    axs[1].plot(moistureExp[:,0] , moistureExp[:,1], 'xb', label='experiment')
+    axs[1].set_xlabel("time (min)")
+    axs[1].set_ylabel("total moisture content (-)")
+    axs[1].set_xlim(0,15)
+    axs[1].set_title("Total moisture content in the the bread")
+    axs[1].legend()
 
-# Extract all numbers using regex
-numbers = []
-for lineI in range(skiprows, len(lines)):
-    line = lines[lineI]
-    matches = re.findall(r"[-+]?\d*\.\d+|[-+]?\d+", line)  # Matches integers and decimals
-    numbers.extend(map(float, matches))  # Convert to float and add to the list
+    # -- Displacement
+    axs[2].plot(probesT[1:,0] / 60, D[:, 1, 1], 'b', label='simulation DY')
+    axs[2].plot(probesT[1:,0] / 60, D[:, 2, 0], 'r', label='simulation DX')
+    axs[2].plot(DExp[:,0] / 60, DExp[:,1], 'xr', label='experimental DX')
+    axs[2].plot(DExp[:,0] / 60, DExp[:,2], 'xb', label='experimental DY')
+    axs[2].set_xlabel("time (min)")
+    axs[2].set_ylabel("displacement in X and Y directions")
+    axs[2].set_xlim(0,15)
+    axs[2].set_title("Displecement of the bread in vertical (X) and horizontal (Y) directions")
+    axs[2].legend()
+    fig.tight_layout()
 
-# Convert the list to a NumPy array
-volumeSim = np.array(numbers).reshape(-1,2)
-# np.savetxt(vystupy + vystup + '/volume.dat', volumeSim, header="time\tmoisture", comments="", delimiter="\t")
-
-volumeExp = np.loadtxt('plots/volumeExp.dat', skiprows=1, delimiter=';')
-                                    
-simAsExpT1 = np.interp(exp[1:,0], time, point1)
-simAsExpT2 = np.interp(exp[1:,0], time, point2)
-simAsExpDX = np.interp(expD[:,0] / 60, time[1:], D[:, 2, 0])
-simAsExpDY = np.interp(expD[:,0] / 60, time[1:], D[:, 1, 1])
-simAsExpWat = np.interp(moistureExp[:,0], moistureSim[:-1,0] / 60, moistureSim[:-1,1])
-errorT1 = np.linalg.norm((exp[1:,1] - simAsExpT1 + 273) / (exp[1:, 1] + 273))
-errorT2 = np.linalg.norm((exp2[1:,1] - simAsExpT2 + 273) / (exp2[1:, 1] + 273))
-errorWat = np.linalg.norm((moistureExp[:, 1] - simAsExpWat) / moistureExp[:, 1])
-errorDX = np.linalg.norm((expD[:,1] - simAsExpDX) / expD[:,1])
-errorDY = np.linalg.norm((expD[:,2] - simAsExpDY) / expD[:,2])
-
-# ovError = errorT1 + errorT2 + errorWat + errorDX + errorDY
-ovError = errorT1 + errorT2 + errorWat
+    plt.savefig(baseCase.dir + 'postProcessingPlot.png')
+                                        
