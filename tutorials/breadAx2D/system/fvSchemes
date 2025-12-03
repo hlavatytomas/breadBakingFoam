@@ -51,8 +51,8 @@ divSchemes
 
 laplacianSchemes
 {
-    // default            Gauss linear corrected;
-    default            relaxedNonOrthoGauss linear corrected 0.5;
+    default            Gauss linear corrected 0.5;
+    // default            relaxedNonOrthoGauss linear corrected 0.5;
 }
 
 snGradSchemes
