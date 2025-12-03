@@ -163,3 +163,25 @@ The resulting post-processing figure consists of three plots. In the first of th
 
 ## Paraview post-processing
 To further examine the results, you can visualize them using paraview software. 
+1. run the `paraview` (in this description we use Paraview 5.12.1),
+2. open `breadAx2D.OpenFOAM` file, that was created during run of `Allrun` script or `pyCtrlScripts/runBreadAx2D.py`,
+3. select open data with `Open FOAM Reader`,
+<img alt="tutBreadAx2DOpenWith" src="tutBreadAx2DOpenWith.png" />
+4. select proper `Case Type` depending on type of your data (single core -> `Reconstructed Case`, parallel -> `Decomposed Case`, 
+5. choose the desired `Time` for post-processing (e.g. 240), and
+6. select `Apply`.
+
+<img alt="tutBreadAx2DAfterApply" src="tutBreadAx2DAfterApply.png" />
+You will obtain such a visualization of the wedge computational mesh. Note that the problem is solved in Total Lagragian formulation, which means mesh is static and the effect of the deformation is resolved by the deformation gradient `F` and its Jacobian `J` in equations.
+
+To vizualize the deformation 
+1. press `Ctrl + space` and type `Warp By Vector`, which will apply `Warp By Vector` filter on your data,
+2. under `Warp By Vector` filter properties select `pointD` field under `Vectors` to warp the geometry by this field, and click `Apply`,
+3. change the view direction to `+Z` and rotate `+90 clockwise`,
+4. select 2D interaction mode.
+<img alt="tutBreadAx2DAfterWarpByVector" src="tutBreadAx2DAfterWarpByVector.png" />
+
+Now, you can split the layout and vizualize multiple variables at once.
+<img alt="tutBreadAx2DAfterVizFields" src="tutBreadAx2DAfterVizFields.png" />
+
+Alternatively, you can try to load prepared paraview state in `ZZ_dataForPostProcessing/seeMultipleFields.pvsm`.
