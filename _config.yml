@@ -7,10 +7,4 @@ title: [breadBakingFoam official page]
 description: [breadBakingFoam is a software for simulation of the bread baking process]
 
 include:
-  - assets/css
-
-sass:
-  style: compressed
-
-include:
-- _includes/head-custom.html
+  - assets
