@@ -3,39 +3,39 @@
 
 @import "{{ site.theme }}";
 
-/* Make the _whole wrapper_ stretch full width */
+/* 1. Remove the narrow wrapper */
 .wrapper {
-  max-width: 100% !important;
+  max-width: none !important;
   width: 100% !important;
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: flex-start;
 }
 
-/* Left column (original "page-header") */
-.page-header {
-  width: 260px !important;       /* sidebar width */
-  flex-shrink: 0 !important;     /* do not let it compress */
-  margin-right: 2rem !important; /* spacing */
-  text-align: left !important;
+/* 2. Force content and sidebar to align horizontally */
+@media screen and (min-width: 64em) {
+  .wrapper {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start;
+  }
+
+  /* left "sidebar" */
+  .page-header {
+    width: 300px !important;
+    margin: 0 !important;
+    padding-right: 2rem !important;
+    flex-shrink: 0 !important;
+    text-align: left !important;
+  }
+
+  /* right content */
+  .main-content {
+    width: calc(100% - 300px) !important;
+    max-width: none !important;
+    padding: 2rem !important;
+  }
 }
 
-/* Right column (content) */
-.main-content {
-  flex-grow: 1 !important;          /* take all remaining space */
-  max-width: none !important;       /* allow infinite width */
-  width: auto !important;
-  padding: 2rem !important;
-  box-sizing: border-box;
-}
-
-/* Wide images behave properly */
+/* Images full width */
 .main-content img {
   max-width: 100% !important;
   height: auto !important;
-}
-
-/* Code blocks scroll */
-.main-content pre {
-  overflow-x: auto;
 }
