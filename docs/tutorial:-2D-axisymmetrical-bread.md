@@ -1,7 +1,7 @@
 # Case description and setup
 This tutorial shows a two-dimensional internal simulation of the bread in the oven. External transport is resolved by custom mixed boundary conditions. The tutorial is located in `tutorials/breadAx2D` and can be:
-1. run directly as prepared by `Allrun` script in `tutorials/breadAx2D`folder, or
-2. modified and run by `runBreadAx2D.py` in `pyCtrlScripts/`.
+1. run directly as prepared by `Allrun` script in `tutorials/breadAx2D` folder, or
+2. modified and run by `pyCtrlScripts/runBreadAx2D.py` control script.
 
 The description of the solved equations and variables is in greater detail discussed in https://doi.org/10.14311/TPFM.2025.015. Furthermore in the solver, the solved variables are noted as: 
 * `alphaI` - volumetric fraction of the I-th phase,
@@ -11,7 +11,8 @@ The description of the solved equations and variables is in greater detail discu
 * `D` - deformation vector. 
 
 ## Geometry and computational mesh description
-<img alt="twoBreadsLength" src="twoBreadsLength.png" />
+
+<img alt="twoBreadsLength" src="twoBreadsLengthV2.png" />
 
 Geometry for the tutorial is taken from the work of Zhang (https://doi.org/10.1002/aic.10518). The computational mesh is prepared using `system/blockMeshDict`, which is pre-prepared in the tutorial case. `blockMeshDict` file with the modified dimesions (radius, height and lenght of the arc) or the computational cell size can be generated using `pyCtrlScripts/runBreadAx2D.py` script by changing `'''Geometry parameters'''` part:
 ```
@@ -166,12 +167,15 @@ To further examine the results, you can visualize them using paraview software.
 1. run the `paraview` (in this description we use Paraview 5.12.1),
 2. open `breadAx2D.OpenFOAM` file, that was created during run of `Allrun` script or `pyCtrlScripts/runBreadAx2D.py`,
 3. select open data with `Open FOAM Reader`,
+
 <img alt="tutBreadAx2DOpenWith" src="tutBreadAx2DOpenWith.png" />
+
 4. select proper `Case Type` depending on type of your data (single core -> `Reconstructed Case`, parallel -> `Decomposed Case`, 
 5. choose the desired `Time` for post-processing (e.g. 240), and
 6. select `Apply`.
 
 <img alt="tutBreadAx2DAfterApply" src="tutBreadAx2DAfterApply.png" />
+
 You will obtain such a visualization of the wedge computational mesh. Note that the problem is solved in Total Lagragian formulation, which means mesh is static and the effect of the deformation is resolved by the deformation gradient `F` and its Jacobian `J` in equations.
 
 To vizualize the deformation 
@@ -179,9 +183,11 @@ To vizualize the deformation
 2. under `Warp By Vector` filter properties select `pointD` field under `Vectors` to warp the geometry by this field, and click `Apply`,
 3. change the view direction to `+Z` and rotate `+90 clockwise`,
 4. select 2D interaction mode.
+
 <img alt="tutBreadAx2DAfterWarpByVector" src="tutBreadAx2DAfterWarpByVector.png" />
 
 Now, you can split the layout and vizualize multiple variables at once.
+
 <img alt="tutBreadAx2DAfterVizFields" src="tutBreadAx2DAfterVizFields.png" />
 
 Alternatively, you can try to load prepared paraview state in `ZZ_dataForPostProcessing/seeMultipleFields.pvsm`.
