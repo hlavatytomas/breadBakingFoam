@@ -3,39 +3,32 @@
 
 @import "{{ site.theme }}";
 
-/* 1. Remove the narrow wrapper */
-.wrapper {
-  max-width: none !important;
-  width: 100% !important;
-}
-
-/* 2. Force content and sidebar to align horizontally */
+/* Force .wrapper to flex row with sidebar + content */
 @media screen and (min-width: 64em) {
   .wrapper {
+    max-width: none !important;  /* remove fixed width */
     display: flex !important;
     flex-direction: row !important;
-    align-items: flex-start;
+    align-items: flex-start !important;
   }
 
-  /* left "sidebar" */
-  .page-header {
+  /* Header (sidebar) fixed width */
+  header {
     width: 300px !important;
-    margin: 0 !important;
-    padding-right: 2rem !important;
     flex-shrink: 0 !important;
+    margin-right: 2rem !important;
     text-align: left !important;
   }
 
-  /* right content */
-  .main-content {
-    width: calc(100% - 300px) !important;
+  /* Section (main content) fills remaining width */
+  section {
+    flex-grow: 1 !important;
     max-width: none !important;
-    padding: 2rem !important;
   }
 }
 
-/* Images full width */
-.main-content img {
+/* Make images inside content full width */
+section img {
   max-width: 100% !important;
   height: auto !important;
 }
