@@ -1,33 +1,38 @@
 ---
 ---
 
-/* First load the theme */
 @import "{{ site.theme }}";
 
-/* Then override it with stronger selectors */
-
-/* Full-width content */
-body .wrapper,
-body .main-content {
+/* Expand the whole page container */
+body .wrapper {
   max-width: 100% !important;
   width: 100% !important;
 }
 
-/* Add padding so text isn't edge-to-edge */
-body .main-content {
+/* Make the right content column full width */
+body .wrapper .main-content {
+  max-width: 100% !important;
+  width: calc(100% - 260px) !important; /* subtract width of left sidebar */
+  margin-left: 260px !important;        /* move it to the right of sidebar */
   padding: 2rem !important;
   box-sizing: border-box;
 }
 
-/* Optional: reset background */
-body {
-  background: white !important;
-  color: black !important;
+/* Make text readable on wide monitors */
+@media (min-width: 1600px) {
+  body .wrapper .main-content {
+    width: calc(100% - 300px) !important;
+    margin-left: 300px !important;
+  }
 }
 
-/* Tables & code */
-body .main-content table,
-body .main-content pre {
-  max-width: 100%;
+/* Let images expand properly */
+body .wrapper .main-content img {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+/* Let code blocks scroll */
+body .wrapper .main-content pre {
   overflow-x: auto;
 }
