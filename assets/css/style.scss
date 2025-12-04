@@ -3,36 +3,39 @@
 
 @import "{{ site.theme }}";
 
-/* Expand the whole page container */
-body .wrapper {
+/* Make the _whole wrapper_ stretch full width */
+.wrapper {
   max-width: 100% !important;
   width: 100% !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start;
 }
 
-/* Make the right content column full width */
-body .wrapper .main-content {
-  max-width: 100% !important;
-  width: calc(100% - 260px) !important; /* subtract width of left sidebar */
-  margin-left: 260px !important;        /* move it to the right of sidebar */
+/* Left column (original "page-header") */
+.page-header {
+  width: 260px !important;       /* sidebar width */
+  flex-shrink: 0 !important;     /* do not let it compress */
+  margin-right: 2rem !important; /* spacing */
+  text-align: left !important;
+}
+
+/* Right column (content) */
+.main-content {
+  flex-grow: 1 !important;          /* take all remaining space */
+  max-width: none !important;       /* allow infinite width */
+  width: auto !important;
   padding: 2rem !important;
   box-sizing: border-box;
 }
 
-/* Make text readable on wide monitors */
-@media (min-width: 1600px) {
-  body .wrapper .main-content {
-    width: calc(100% - 300px) !important;
-    margin-left: 300px !important;
-  }
-}
-
-/* Let images expand properly */
-body .wrapper .main-content img {
+/* Wide images behave properly */
+.main-content img {
   max-width: 100% !important;
   height: auto !important;
 }
 
-/* Let code blocks scroll */
-body .wrapper .main-content pre {
+/* Code blocks scroll */
+.main-content pre {
   overflow-x: auto;
 }
