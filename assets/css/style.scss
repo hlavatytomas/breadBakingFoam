@@ -1,9 +1,33 @@
 ---
 ---
 
-/* DO NOT import the theme yet. Let's see if CSS loads at all */
+/* First load the theme */
+@import "{{ site.theme }}";
 
+/* Then override it with stronger selectors */
+
+/* Full-width content */
+body .wrapper,
+body .main-content {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+/* Add padding so text isn't edge-to-edge */
+body .main-content {
+  padding: 2rem !important;
+  box-sizing: border-box;
+}
+
+/* Optional: reset background */
 body {
-  background: black !important;
-  color: white !important;
+  background: white !important;
+  color: black !important;
+}
+
+/* Tables & code */
+body .main-content table,
+body .main-content pre {
+  max-width: 100%;
+  overflow-x: auto;
 }
