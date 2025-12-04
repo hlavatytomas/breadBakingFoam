@@ -6,25 +6,31 @@
 /* Force .wrapper to flex row with sidebar + content */
 @media screen and (min-width: 64em) {
   .wrapper {
-    max-width: none !important;  /* remove fixed width */
+    max-width: 100% !important; // remove the theme’s fixed width
     display: flex !important;
     flex-direction: row !important;
     align-items: flex-start !important;
+    flex-wrap: wrap; // allow footer to wrap
+    width: 100%;
+    box-sizing: border-box;
   }
+}
 
-  /* Header (sidebar) fixed width */
-  header {
-    width: 300px !important;
-    flex-shrink: 0 !important;
-    margin-right: 2rem !important;
-    text-align: left !important;
-  }
+header {
+  width: 300px !important; // fixed width sidebar
+  flex-shrink: 0 !important;
+  margin-right: 2rem !important;
+  text-align: left !important;
 
-  /* Section (main content) fills remaining width */
-  section {
-    flex-grow: 1 !important;
-    max-width: none !important;
-  }
+  // Prevent theme from centering
+  float: none !important;
+  display: block !important;
+}
+
+section {
+  flex-grow: 1 !important;  // take remaining space
+  max-width: none !important; 
+  min-width: 0; // prevents flex item from overflowing
 }
 
 /* Make images inside content full width */
