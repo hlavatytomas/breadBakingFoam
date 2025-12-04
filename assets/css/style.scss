@@ -10,7 +10,7 @@
     display: flex !important;
     flex-direction: row !important;
     align-items: flex-start !important;
-    flex-wrap: wrap; // allow footer to wrap
+    flex-wrap: nowrap; // allow footer to wrap
     width: 100%;
     box-sizing: border-box;
   }
