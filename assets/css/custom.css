@@ -1,0 +1,19 @@
+/* Override GitHub Minimal Theme width limit */
+.main-content {
+  max-width: 100% !important;
+  width: 100% !important;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+/* Expand the page container */
+.page-header, .project-name, .project-tagline {
+  max-width: 100% !important;
+}
+
+/* If using tables or code blocks, allow full-width scroll */
+.main-content table,
+.main-content pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
