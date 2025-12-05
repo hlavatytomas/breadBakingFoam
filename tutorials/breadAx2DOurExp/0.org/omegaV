@@ -20,16 +20,15 @@ internalField   uniform 7.7e-3;
 
 boundaryField
 {
-    // Zhang experiment
     "(wedgeZ0|wedgeZE)"
 	{
 		type wedge;
 	}   
-    
-    "(sides|bottom)"
+
+    sides
     {
         type breadOmegaVMixed;
-        kM               0.01; // -- mass transfer coefficient
+        kM               6e-4; // -- heat transfer coefficient
 
         // -- mixed BC mandatory entires
         refValue        uniform 7.7e-3;
@@ -41,14 +40,12 @@ boundaryField
             file "$FOAM_CASE/constant/omegaVInfTable";
             outOfBounds warn;
         }
-	}
+    }
 
-    // our experiment
-    sidesOur
+    top
     {
-        // type zeroGradient;
         type breadOmegaVMixed;
-        kM               0.009; // -- heat transfer coefficient
+        kM               0.01; // -- heat transfer coefficient
 
         // -- mixed BC mandatory entires
         refValue        uniform 7.7e-3;
@@ -57,16 +54,15 @@ boundaryField
         value           uniform 7.7e-3;
         omegaVInfTableDict   
         {
-            file "$FOAM_CASE/constant/omegaVInfTableOur";
+            file "$FOAM_CASE/constant/omegaVInfTable";
             outOfBounds warn;
         }
-	}
+    }
 
-    topOur
+    bottom
     {
         type breadOmegaVMixed;
-        // kM               0.007; // -- heat transfer coefficient
-        kM               0.008; // -- heat transfer coefficient
+        kM               3e-4; // -- heat transfer coefficient
 
         // -- mixed BC mandatory entires
         refValue        uniform 7.7e-3;
@@ -75,35 +71,11 @@ boundaryField
         value           uniform 7.7e-3;
         omegaVInfTableDict   
         {
-            file "$FOAM_CASE/constant/omegaVInfTableOur";
-            outOfBounds warn;
-        }
-	}
-
-    bottomOur
-    {
-        type breadOmegaVMixed;
-        // kM               0.001; // -- heat transfer coefficient
-        kM               0.007; // -- heat transfer coefficient
-
-        // -- mixed BC mandatory entires
-        refValue        uniform 7.7e-3;
-        refGradient     uniform 0;
-        valueFraction   uniform 0;
-        value           uniform 7.7e-3;
-        omegaVInfTableDict   
-        {
-            file "$FOAM_CASE/constant/omegaVInfTableOur";
+            file "$FOAM_CASE/constant/omegaVInfTable";
             outOfBounds warn;
         }
         // type zeroGradient;
-	}
-
-    // "(bottomOur|topOur|sidesOur)"
-    // {
-    //     type fixedValue;
-    //     value uniform 0.02;
-    // }
+    }
 }
 
 

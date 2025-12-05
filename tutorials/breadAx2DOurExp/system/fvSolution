@@ -33,6 +33,13 @@ solvers
     }
 }
 
+interpolationSchemes
+{
+  D pointMVC;
+  grad(D) pointMVC;
+  T pointMVC;
+}
+
 PIMPLE
 {
     nOuterCorrectors 250;

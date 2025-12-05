@@ -10,7 +10,6 @@ import math
 from blockMeshDictClassV8 import *
 
 def prep2DMeshZhang(obloukL, rLoaf, hLoaf, x0, y0, z0, dA, dX, dY, dZ, grX, grY, grZ, baseCase):
-    
     if not obloukL == 0:
         wAng = 5
         # -- preparation of the blockMeshDictFile for geometry generation
@@ -381,3 +380,66 @@ def prep2DMeshZhang(obloukL, rLoaf, hLoaf, x0, y0, z0, dA, dX, dY, dZ, grX, grY,
 
     else:
         raise ValueError('Dough arc length cannot be 0.')
+
+def prep2DMeshOurExp(rLoaf, hLoaf, x0, y0, z0, dA, dX, dY, dZ, grX, grY, grZ, baseCase):
+    wAng = 5
+    # -- preparation of the blockMeshDictFile for geometry generation
+    yMax = dZ/math.atan(wAng/180*math.pi*0.5)                   # -- yMax from wedge angle
+    fvMesh = mesh()                                             # -- create mesh
+    nCZ = 1                                                     # -- wedge
+
+    # -- firstBlock
+    xC, yC = x0, y0
+    xE, yE = xC+hLoaf, yC+rLoaf
+
+    # vertices
+    vertices = [
+        [xC, yC, z0-yC/yMax*dZ],
+        [xE, yC, z0-yC/yMax*dZ],
+        [xE, yE, z0-yE/yMax*dZ],
+        [xC, yE, z0-yE/yMax*dZ],
+        [xC, yC, z0+yC/yMax*dZ],
+        [xE, yC, z0+yC/yMax*dZ],
+        [xE, yE, z0+yE/yMax*dZ],
+        [xC, yE, z0+yE/yMax*dZ],
+    ]
+
+    # neighbouring blocks
+    neighbours = []
+
+    # number of cells
+    nCX = int(round(abs(xE-xC)/dX))
+    nCY = int(round(abs(yE-yC)/dY))
+    nCells = [nCX, nCY, nCZ]
+
+    # grading
+    grading = [grX, grY, grZ]
+
+    # create the block
+    first = fvMesh.addBlock(vertices, neighbours, nCells, grading) 
+    
+    top = list()
+    top.append(first.retFYZE())
+    fvMesh.addPatch("top", "patch", top)
+
+    sides = list()
+    sides.append(first.retFXZE())
+    fvMesh.addPatch("sides", "patch", sides)
+    
+    bottom = list()
+    bottom.append(first.retFYZ0())
+    fvMesh.addPatch("bottom", "patch", bottom)
+        
+    wedgeZ0 = list()
+    for block in fvMesh.blocks:
+        wedgeZ0.append(block.retFXY0())
+
+    fvMesh.addPatch("wedgeZ0", "wedge", wedgeZ0)
+    wedgeZE = list()
+    for block in fvMesh.blocks:
+        wedgeZE.append(block.retFXYE())
+
+    fvMesh.addPatch("wedgeZE", "wedge", wedgeZE)
+
+    ### WRITE ###
+    fvMesh.writeBMD("%s/system/" % baseCase.dir)

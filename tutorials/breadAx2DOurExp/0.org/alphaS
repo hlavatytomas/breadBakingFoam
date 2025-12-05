@@ -16,11 +16,11 @@ FoamFile
 
 dimensions      [0 0 0 0 0 0 0];
 
-internalField   uniform 0.28;
+internalField   uniform 0.390299776;
 
 boundaryField
 {
-	"(sides|bottom|sidesOur|bottomOur|topOur)"
+	"(sides|bottom|top)"
 	{
         type zeroGradient;
 	}

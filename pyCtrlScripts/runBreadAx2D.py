@@ -26,7 +26,6 @@ runPostProcess = True   # -- run post-processing
 
 # DEFINE PARAMETERS=====================================================
 '''Geometry parameters'''
-typeOfMesh = '2DZhang'
 mSStep = 0.1e-2 # -- aproximate computational cell size
 rLoaf = 3.6e-2  # -- loaf radius                
 hLoaf = 3.5e-2  # -- loaf height
@@ -106,8 +105,7 @@ grX = grY = grZ = "1.0"
 
 # -- prepare blockMeshDict using luckas python class
 if prepBlockMesh:
-    if typeOfMesh == '2DZhang':
-        prep2DMeshZhang(arcL, rLoaf, hLoaf, x0, y0, z0, dA, dX, dY, dZ, grX, grY, grZ, baseCase)
+    prep2DMeshZhang(arcL, rLoaf, hLoaf, x0, y0, z0, dA, dX, dY, dZ, grX, grY, grZ, baseCase)
 
 # CHANGE THE PARAMETERS IN OPENFOAM DICTIONARIES========================
 # 1) BOUNDARY CONDITIONS
@@ -176,16 +174,15 @@ baseCase.setParameters(
 
 # -- prepare geom
 if makeGeom:
-    if typeOfMesh == '2DZhang':
-        baseCase.runCommands(
-            [
-                'chmod 755 ./* -R',
-                'blockMesh > log.blockMesh',
-                'rm -rf 0',
-                'cp -r 0.org 0',
-                'paraFoam -touch',
-            ]
-        )
+    baseCase.runCommands(
+        [
+            'chmod 755 ./* -R',
+            'blockMesh > log.blockMesh',
+            'rm -rf 0',
+            'cp -r 0.org 0',
+            'paraFoam -touch',
+        ]
+    )
 
 # RUN THE SIMULATION====================================================
 if runDynSim:

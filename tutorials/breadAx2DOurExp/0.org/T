@@ -17,25 +17,10 @@ FoamFile
 
 dimensions      [0 0 0 1 0 0 0];
 
-internalField   uniform 300;
+internalField   uniform 302.5;
 
 boundaryField
 {
-    // Zhang experiment
-    "(sides|bottom)"
-	{
-        type breadTMixed;
-        refValue        uniform 300;
-        refGradient     uniform 0;
-        valueFraction   uniform 0;
-        value           uniform 300;
-        alpha           10;
-        TInfTableDict   
-        {
-            file "$FOAM_CASE/constant/TInfTable";
-            outOfBounds warn;
-        }
-	}
 	
 	"(wedgeZ0|wedgeZE)"
 	{
@@ -43,32 +28,17 @@ boundaryField
 	}
 
     // custom experiment
-    "(sidesOur|topOur)"
+    "(sides|bottom|top)"
 	{
         type breadTMixed;
-        refValue        uniform 300;
+        refValue        uniform 302;
         refGradient     uniform 0;
         valueFraction   uniform 0;
-        value           uniform 300;
-        alpha           9;
+        value           uniform 302;
+        alpha           9.5;
         TInfTableDict   
         {
-            file "$FOAM_CASE/constant/TInfTableOur";
-            outOfBounds warn;
-        }
-	}
-
-    "(bottomOur)"
-	{
-        type breadTMixed;
-        refValue        uniform 300;
-        refGradient     uniform 0;
-        valueFraction   uniform 0;
-        value           uniform 300;
-        alpha           11;
-        TInfTableDict   
-        {
-            file "$FOAM_CASE/constant/TInfTableOur";
+            file "$FOAM_CASE/constant/TInfTable";
             outOfBounds warn;
         }
 	}

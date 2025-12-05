@@ -17,7 +17,7 @@ FoamFile
 
 dimensions      [0 0 0 0 0 0 0];
 
-internalField   uniform 0.105252;
+internalField   uniform 0.153;
 
 
 boundaryField
@@ -27,7 +27,7 @@ boundaryField
 		type wedge;
 	}
 	
-	"(sides|bottom|sidesOur|bottomOur|topOur)"
+	"(sides|bottom|top)"
 	{
         type zeroGradient;
 	}

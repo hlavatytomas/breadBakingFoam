@@ -42,68 +42,6 @@ boundaryField
             outOfBounds warn;
         }
 	}
-
-    // our experiment
-    sidesOur
-    {
-        // type zeroGradient;
-        type breadOmegaVMixed;
-        kM               0.009; // -- heat transfer coefficient
-
-        // -- mixed BC mandatory entires
-        refValue        uniform 7.7e-3;
-        refGradient     uniform 0;
-        valueFraction   uniform 0;
-        value           uniform 7.7e-3;
-        omegaVInfTableDict   
-        {
-            file "$FOAM_CASE/constant/omegaVInfTableOur";
-            outOfBounds warn;
-        }
-	}
-
-    topOur
-    {
-        type breadOmegaVMixed;
-        // kM               0.007; // -- heat transfer coefficient
-        kM               0.008; // -- heat transfer coefficient
-
-        // -- mixed BC mandatory entires
-        refValue        uniform 7.7e-3;
-        refGradient     uniform 0;
-        valueFraction   uniform 0;
-        value           uniform 7.7e-3;
-        omegaVInfTableDict   
-        {
-            file "$FOAM_CASE/constant/omegaVInfTableOur";
-            outOfBounds warn;
-        }
-	}
-
-    bottomOur
-    {
-        type breadOmegaVMixed;
-        // kM               0.001; // -- heat transfer coefficient
-        kM               0.007; // -- heat transfer coefficient
-
-        // -- mixed BC mandatory entires
-        refValue        uniform 7.7e-3;
-        refGradient     uniform 0;
-        valueFraction   uniform 0;
-        value           uniform 7.7e-3;
-        omegaVInfTableDict   
-        {
-            file "$FOAM_CASE/constant/omegaVInfTableOur";
-            outOfBounds warn;
-        }
-        // type zeroGradient;
-	}
-
-    // "(bottomOur|topOur|sidesOur)"
-    // {
-    //     type fixedValue;
-    //     value uniform 0.02;
-    // }
 }
 
 

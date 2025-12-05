@@ -27,26 +27,11 @@ boundaryField
 	{
 		type wedge;
 	}
-
-    "(bottom|sides)"
-    // "(bottom|sides|sidesOur|topOur|bottomOur)"
-    {
-        // type breadPGMixed;
-        // kM              0.01;   // -- mass transfer coefficient
-        // pGInf            1e5;   // -- oven temperature
-
-        // // -- mixed BC mandatory entires
-        // refValue        uniform 1e5;
-        // refGradient     uniform 0;
-        // valueFraction   uniform 0;
-        // value           uniform 1e5;
-        type fixedValue;
-        value $internalField;
-	}
-    sidesOur
+    
+    sides
     {
         type breadPGMixed;
-        kM               0.009; // -- heat transfer coefficient
+        kM               6e-4; // -- heat transfer coefficient
         pGInf        1e5;    // -- oven temperature
 
         // -- mixed BC mandatory entires
@@ -54,18 +39,14 @@ boundaryField
         refGradient     uniform 0;
         valueFraction   uniform 0;
         value           uniform 1e5;
-        // type fixedValue;
-        // value $internalField;
-        // type zeroGradient;
-	}
+    }
 
-    topOur
+    top
     {
         type fixedValue;
         value $internalField;
         // type breadPGMixed;
-        // // kM               0.007; // -- heat transfer coefficient
-        // kM               0.008; // -- heat transfer coefficient
+        // kM               0.01; // -- heat transfer coefficient
         // pGInf        1e5;    // -- oven temperature
 
         // // -- mixed BC mandatory entires
@@ -73,16 +54,12 @@ boundaryField
         // refGradient     uniform 0;
         // valueFraction   uniform 0;
         // value           uniform 1e5;
-	}
+    }
 
-    bottomOur
+    bottom
     {
-        // type zeroGradient;
-        // type fixedValue;
-        // value $internalField;
         type breadPGMixed;
-        // kM               0.001; // -- heat transfer coefficient
-        kM               0.007; // -- heat transfer coefficient
+        kM               3e-4; // -- heat transfer coefficient
         pGInf        1e5;    // -- oven temperature
 
         // -- mixed BC mandatory entires
@@ -90,7 +67,7 @@ boundaryField
         refGradient     uniform 0;
         valueFraction   uniform 0;
         value           uniform 1e5;
-	}
+    }
 }
 
 // ************************************************************************* //
