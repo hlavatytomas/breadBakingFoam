@@ -291,8 +291,8 @@ bool breadBakingSolid::evolve()
     << ", Initial residual = " << initialResidual
     << ", Final residual = " << solverPerfD.initialResidual()
     << ", No outer iterations = " << iCorr << nl
-    << " Max relative residual = " << maxRes
-    << ", Relative residual = " << res
+    // << " Max relative residual = " << maxRes
+    // << ", Relative residual = " << res
     << ", enforceLinear = " << enforceLinear() << endl;
 
 #ifdef OPENFOAM_NOT_EXTEND

@@ -243,7 +243,7 @@ bool unsBreadBakingSolid::evolve()
     scalar curConvergenceTolerance = solutionTol();
 
     // Reset enforceLinear switch
-    enforceLinear() = false;
+    // enforceLinear() = false;
 
     do
     {
@@ -279,23 +279,24 @@ bool unsBreadBakingSolid::evolve()
           + fvc::div((Jf_*Finvf_.T() & mesh().Sf()) & sigmaf_)
           - fvc::div((Jf_*Finvf_.T() & mesh().Sf()) & fvc::interpolate(deltaP)*I)
           + rho*g()
+        // + stabilisation().stabilisation(D(), gradD(), impK_)
         );
 
         // Add damping
-        if (dampingCoeff().value() > SMALL)
-        {
-            DEqn += dampingCoeff()*rho*fvm::ddt(D());
-        }
+        // if (dampingCoeff().value() > SMALL)
+        // {
+        //     DEqn += dampingCoeff()*rho*fvm::ddt(D());
+        // }
 
         // Enforce linear to improve convergence
-        if (enforceLinear())
-        {
-            // Replace nonlinear terms with linear
-            // Note: the mechanical law could still be nonlinear
-            DEqn +=
-                fvc::div((Jf_*Finvf_.T() & mesh().Sf()) & sigmaf_)
-              - fvc::div(mesh().Sf() & sigmaf_);
-        }
+        // if (enforceLinear())
+        // {
+        //     // Replace nonlinear terms with linear
+        //     // Note: the mechanical law could still be nonlinear
+        //     DEqn +=
+        //         fvc::div((Jf_*Finvf_.T() & mesh().Sf()) & sigmaf_)
+        //       - fvc::div(mesh().Sf() & sigmaf_);
+        // }
 
         // Under-relax the linear system
         DEqn.relax();
@@ -307,7 +308,8 @@ bool unsBreadBakingSolid::evolve()
         solverPerfD = DEqn.solve();
 
         // Under-relax displacement field
-        relaxField(D(), iCorr);
+        // relaxField(D(), iCorr);
+        D().relax();
 
         if (iCorr == 0)
         {
@@ -334,16 +336,16 @@ bool unsBreadBakingSolid::evolve()
         Jf_ = det(Ff_);
 
         // Check if outer loops are diverging
-        if (nonLinear_ && !enforceLinear())
-        {
-            checkEnforceLinear(Jf_);
-        }
+        // if (nonLinear_ && !enforceLinear())
+        // {
+        //     checkEnforceLinear(Jf_);
+        // }
 
         // Calculate the stress using run-time selectable mechanical law
         mechanical().correct(sigmaf_);
 
         // Calculate relative momentum residual
-        res = residual(D());
+        // res = residual(D());
 
         if (res > maxRes)
         {
@@ -390,11 +392,11 @@ bool unsBreadBakingSolid::evolve()
     // Print summary of residuals
     Info<< solverPerfD.solverName() << ": Solving for " << D().name()
         << ", Initial residual = " << initialResidual
-        << ", Final residual = " << solverPerfD.initialResidual()
-        << ", No outer iterations = " << iCorr << nl
-        << " Max relative residual = " << maxRes
-        << ", Relative residual = " << res
-        << ", enforceLinear = " << enforceLinear() << endl;
+        << ", Final residual = " << solverPerfD.initialResidual() <<endl;
+        // << ", No outer iterations = " << iCorr << nl
+        // << " Max relative residual = " << maxRes
+        // << ", Relative residual = " << res
+        // << ", enforceLinear = " << enforceLinear() << endl;
 
 #ifdef OPENFOAM_NOT_EXTEND
     SolverPerformance<vector>::debug = 1;
@@ -402,10 +404,10 @@ bool unsBreadBakingSolid::evolve()
     blockLduMatrix::debug = 1;
 #endif
 
-    if (nonLinear_ && enforceLinear())
-    {
-        return false;
-    }
+    // if (nonLinear_ && enforceLinear())
+    // {
+    //     return false;
+    // }
 
     return true;
 }
