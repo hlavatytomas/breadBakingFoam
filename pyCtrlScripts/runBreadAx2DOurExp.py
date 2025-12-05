@@ -90,7 +90,9 @@ DRelax = 0.1
 DFinalRelax = 1
 
 '''Boundary conditions'''
-kG = 0.01   # -- external mass transfer coeficient
+kMSides = 6e-4   # -- external mass transfer coeficient
+kMBottom = 3e-4   # -- external mass transfer coeficient
+kMTop = 0.01   # -- external mass transfer coeficient
 alphaG = 10 # -- external heat transfer coeficient 
 
 '''Post-processing'''
@@ -125,6 +127,15 @@ if prepBlockMesh:
 # CHANGE THE PARAMETERS IN OPENFOAM DICTIONARIES========================
 # 1) BOUNDARY CONDITIONS
 # -- change in tutorial case
+baseCase.setParameters(
+    [
+        ['0.org/omegaV', 'kM', str(kMSides), 'sides'],
+        ['0.org/omegaV', 'kM', str(kMBottom), 'bottom'],
+        ['0.org/omegaV', 'kM', str(kMTop), 'top'],
+        ['0.org/pG', 'kM', str(kMSides), 'sides'],
+        ['0.org/pG', 'kM', str(kMBottom), 'bottom'],
+    ]
+)
 
 # 2) constant/transportProperties
 baseCase.setParameters(
