@@ -6,7 +6,7 @@ breadBakingFoam is a free, open-source software based on OpenFOAM (https://openf
 
 <img alt="aaa_growth" width="75%" src="docs/aaa_growth.webp" />
 
-Instalation
+[Installation](docs/installation.md)
 --------------
 1. install OpenFOAM-v2312 and solids4foam-v2.1 
 2. change path to solids4foam in `install.sh` and `applications/solvers/breadBakingFoam/Make/options` files
