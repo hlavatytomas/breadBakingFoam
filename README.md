@@ -4,6 +4,8 @@ About breadBakingFoam
 ---------------------
 breadBakingFoam is a free, open-source software based on OpenFOAM (https://openfoam.com) and solids4foam (https://www.solids4foam.com) capable of simulating bread baking process. The code is developed mostly by members of the techMathGroup of the Institute of Thermomechanics of the Czech Academy of Sciences (https://www.it.cas.cz/) as a part of the Natinal Agency for Agricultural research project on optimization of the energy consupmtion during bread baking.
 
+<img alt="aaa_growth" width="75%" src="docs/aaa_growth.webp" />
+
 Instalation
 --------------
 1. install OpenFOAM-v2312 and solids4foam-v2.1 
