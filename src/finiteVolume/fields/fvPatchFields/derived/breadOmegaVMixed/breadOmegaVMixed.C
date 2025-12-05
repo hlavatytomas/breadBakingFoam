@@ -281,11 +281,11 @@ void Foam::breadOmegaVMixedFvPatchScalarField::evaluate(const Pstream::commsType
             const volScalarField& alphaS = this->db().objectRegistry::lookupObject<volScalarField>("alphaS");
             const volScalarField& alphaL = this->db().objectRegistry::lookupObject<volScalarField>("alphaL");
             const volScalarField& rhoG = this->db().objectRegistry::lookupObject<volScalarField>("rhoG");
-            const volVectorField& D = this->db().objectRegistry::lookupObject<volVectorField>("D");
+            // const volVectorField& D = this->db().objectRegistry::lookupObject<volVectorField>("D");
             // const surfaceVectorField& Sf = mesh.Sf();
 
-            vectorField DCells = D.boundaryField()[this->patch().index()].patchInternalField();
-            vectorField DBound = D.boundaryField()[this->patch().index()];
+            // vectorField DCells = D.boundaryField()[this->patch().index()].patchInternalField();
+            // vectorField DBound = D.boundaryField()[this->patch().index()];
             // vectorField SfBound = Sf.boundaryField()[this->patch().index()];
             // scalarField Dmag =  (DBound - DCells) & SfBound / mag(SfBound);
 
@@ -301,10 +301,10 @@ void Foam::breadOmegaVMixedFvPatchScalarField::evaluate(const Pstream::commsType
             scalarField pGCells = pG.boundaryField()[this->patch().index()].patchInternalField();
                     
             scalarField alphaGBound = 1 - alphaS.boundaryField()[this->patch().index()] - alphaL.boundaryField()[this->patch().index()];
-            // scalarField K1Bound = rhoGBound * permBound * this->patch().deltaCoeffs();
-            // scalarField K2Bound = rhoGBound * DEff * this->patch().deltaCoeffs();
-            scalarField K1Bound = rhoGBound * permBound / (mag(this->patch().delta() + (DBound - DCells)));
-            scalarField K2Bound = rhoGBound * DEff / (mag(this->patch().delta() + (DBound - DCells)));
+            scalarField K1Bound = rhoGBound * permBound * this->patch().deltaCoeffs();
+            scalarField K2Bound = rhoGBound * DEff * this->patch().deltaCoeffs();
+            // scalarField K1Bound = rhoGBound * permBound / (mag(this->patch().delta() + (DBound - DCells)));
+            // scalarField K2Bound = rhoGBound * DEff / (mag(this->patch().delta() + (DBound - DCells)));
 
             // scalarField denominator = K1Bound * (pGBound - pGBound) + K2Bound + K2Bound / MgBound * (MgBound - MgCells) + kM_ * rhoGBound * alphaGBound;
             // scalarField denominator = K1Bound * (pGBound - pGBound) + K2Bound + K2Bound / MgBound * (MgBound - MgCells) + kM_ * rhoGBound;
@@ -315,10 +315,6 @@ void Foam::breadOmegaVMixedFvPatchScalarField::evaluate(const Pstream::commsType
             this->valueFraction() = f;
             this->refValue() = a / f;
         }
-    }
-    else
-    {
-        Pout << "DEff not loaded" <<endl;
     }
 
     scalarField::operator=
