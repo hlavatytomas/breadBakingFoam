@@ -23,15 +23,15 @@ internalField   uniform 1e5;
 
 boundaryField
 {
-	"(wedgeZ0|wedgeZE)"
-	{
-		type wedge;
-	}
+    "symmetryPatch"
+    {
+        type  symmetry;
+    }
     
     sides
     {
         type breadPGMixed;
-        kM               6e-4; // -- heat transfer coefficient
+        kM               0.01; // -- heat transfer coefficient
         pGInf        1e5;    // -- oven temperature
 
         // -- mixed BC mandatory entires
@@ -39,21 +39,6 @@ boundaryField
         refGradient     uniform 0;
         valueFraction   uniform 0;
         value           uniform 1e5;
-    }
-
-    top
-    {
-        type fixedValue;
-        value $internalField;
-        // type breadPGMixed;
-        // kM               0.01; // -- heat transfer coefficient
-        // pGInf        1e5;    // -- oven temperature
-
-        // // -- mixed BC mandatory entires
-        // refValue        uniform 1e5;
-        // refGradient     uniform 0;
-        // valueFraction   uniform 0;
-        // value           uniform 1e5;
     }
 
     bottom

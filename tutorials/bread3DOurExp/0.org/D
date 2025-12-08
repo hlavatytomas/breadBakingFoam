@@ -26,23 +26,19 @@ boundaryField
     // Zhang experiment
     "(sides|bottom)"
     {
-        type            fixedDisplacementZeroShear;
+        type            fixedValue;
         value           uniform (0 0 0);
     }
 
-    "(wedgeZ0|wedgeZE)"
-	{
-		type wedge;
-	}
-
-    top
+    "symmetryPatch"
     {
-        // type            solidTraction;
-        // traction        uniform (0 0 0);
-        // pressure        uniform 0;
-        // value           uniform (0 0 0);
-        type            breadDSide;
-        sidePos         5.8e-2;
+        type  symmetry;
+    }
+
+    sides
+    {
+        type            breadDFloor;
+        floorPos        -17.5e-3;
         refValue        uniform (0 0 0);
         refGradient     uniform (0 0 0);
         valueFraction   uniform 1;

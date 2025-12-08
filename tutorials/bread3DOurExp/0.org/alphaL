@@ -22,15 +22,15 @@ internalField   uniform 0.153;
 
 boundaryField
 {
-	"(wedgeZ0|wedgeZE)"
-	{
-		type wedge;
-	}
-	
 	"(sides|bottom|top)"
 	{
         type zeroGradient;
 	}
+
+  "symmetryPatch"
+  {
+    type  symmetry;
+  }
 }
 
 // ************************************************************************* //

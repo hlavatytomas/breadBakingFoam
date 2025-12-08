@@ -25,10 +25,10 @@ boundaryField
         type zeroGradient;
 	}
 	
-	"(wedgeZ0|wedgeZE)"
-	{
-		type wedge;
-	}
+  "symmetryPatch"
+  {
+    type  symmetry;
+  }
 }
 
 // ************************************************************************* //

@@ -22,10 +22,10 @@ internalField   uniform 302.5;
 boundaryField
 {
 	
-	"(wedgeZ0|wedgeZE)"
-	{
-		type wedge;
-	}
+    "symmetryPatch"
+    {
+        type  symmetry;
+    }
 
     // custom experiment
     "(sides|bottom|top)"
