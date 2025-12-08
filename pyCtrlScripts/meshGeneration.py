@@ -443,3 +443,250 @@ def prep2DMeshOurExp(rLoaf, hLoaf, x0, y0, z0, dA, dX, dY, dZ, grX, grY, grZ, ba
 
     ### WRITE ###
     fvMesh.writeBMD("%s/system/" % baseCase.dir)
+
+def y(x, z, hLoaf, rLoaf1, rLoaf2):
+    return ((1 - z**2 / rLoaf2**2 - (x)**2 / hLoaf**2) * rLoaf1**2)**0.5
+
+def x(y, z, hLoaf, rLoaf1, rLoaf2):
+    return ((1 - z**2 / rLoaf2**2 - y**2 / rLoaf1**2) * hLoaf**2)**0.5
+
+def prep3DMeshOurExp(rLoaf1, rLoaf2, hLoaf, dX, dY, dZ, grX, grY, grZ, baseCase):
+    # -- preparation of the blockMeshDictFile for geometry generation
+    fvMesh = mesh()
+
+    nPointsForEdge = 100
+
+    p1 = 0.4
+    p2 = 0.7
+    p3 = 0.68
+    p4 = 0.57
+
+    nasobekX = 1.5
+
+    rInZ = p1 * rLoaf2
+    rInY = p1 * rLoaf1
+    rInX = p1 * hLoaf
+
+    body = np.array([
+        [0, 0, 0],                                       #0
+        [rInX, 0, 0],                                       #1
+        [rInX, 0, rInZ],                                       #2
+        [0, 0, rInZ],                                       #3
+        [0, rInY, 0],                                       #4
+        [rInX, rInY, 0],                                       #5
+        [rInX, rInY, rInZ],                                       #6
+        [0, rInY, rInZ],                                       #7
+        [0, rLoaf1, 0],                                       #8
+        [0, y(0, p2* rLoaf2, hLoaf, rLoaf1, rLoaf2), p2* rLoaf2],                                       #9
+        [x(p3*rLoaf1, 0, hLoaf, rLoaf1, rLoaf2), p3*rLoaf1, 0],                                       #10
+        [x(p4*rLoaf1, p4* rLoaf2, hLoaf, rLoaf1, rLoaf2), p4*rLoaf1, p4* rLoaf2],                                       #11
+        [0, 0, rLoaf2],                                       #12
+        [x(0, p3*rLoaf2, hLoaf, rLoaf1, rLoaf2), 0, p3*rLoaf2],                                       #13 -- with edge
+        [hLoaf, 0,0 ],                                       #14 -- with edge
+        
+    ])
+
+    # vertices
+    vertices = [
+            [body[0,0], body[0,1], body[0,2]],
+            [body[1,0], body[1,1], body[1,2]],
+            [body[5,0], body[5,1], body[5,2]],
+            [body[4,0], body[4,1], body[4,2]],
+            [body[3,0], body[3,1], body[3,2]],
+            [body[2,0], body[2,1], body[2,2]],
+            [body[6,0], body[6,1], body[6,2]],
+            [body[7,0], body[7,1], body[7,2]],
+        ]
+
+    # neighbouring blocks
+    neighbours = []
+
+    # number of cells
+    nCX = int(round(abs(rInX)/dX)*nasobekX)
+    nCY = int(round(abs(rInY)/dY))
+    nCZ = int(round(abs(rInZ)/dZ))
+    nCells = [nCX, nCY, nCZ]
+
+    # grading
+    grading = [grX, grY, grZ]
+
+    # create the block
+    block1 = fvMesh.addBlock(vertices, neighbours, nCells, grading)
+
+    # vertices
+    vertices = [
+            [body[4,0], body[4,1], body[4,2]],
+            [body[5,0], body[5,1], body[5,2]],
+            [body[10,0], body[10,1], body[10,2]],
+            [body[8,0], body[8,1], body[8,2]],
+            [body[7,0], body[7,1], body[7,2]],
+            [body[6,0], body[6,1], body[6,2]],
+            [body[11,0], body[11,1], body[11,2]],
+            [body[9,0], body[9,1], body[9,2]],
+        ]
+
+    # neighbouring blocks
+    neighbours = []
+
+    # number of cells
+    # nCX = int(round(abs(dy)/dX))
+    nCY2 = int(round(abs(rLoaf1-rInY)/dY))
+    # nCZ = int(round(abs(dy)/dZ))
+    nCells = [nCX, nCY2, nCZ]
+
+    # grading
+    grading = [grX, grY, grZ]
+
+    # create the block
+    block2 = fvMesh.addBlock(vertices, neighbours, nCells, grading)
+
+    # edges 
+    yTu = np.linspace(body[8,1], body[10,1], nPointsForEdge)
+    xTu = [x(yy, 0, hLoaf, rLoaf1, rLoaf2) for yy in yTu]
+    edges = []
+    for yInd in range(len(yTu)):
+        edges.append([xTu[yInd], yTu[yInd], 0])
+    fvMesh.addEdge("polyLine", block2.retEYEZ0(), edges)
+
+    yTu = np.linspace(body[9,1], body[11,1], nPointsForEdge)
+    k = (body[9,2] - body[11,2]) / (body[9,1] -body[11,1])
+    a = body[9,2] - k * body[9,1]
+    zTu = [(k * yy + a) for yy in yTu]
+    edges = []
+    for yInd in range(len(yTu)):
+        edges.append([x(yTu[yInd], zTu[yInd], hLoaf, rLoaf1, rLoaf2), yTu[yInd], zTu[yInd]])
+    fvMesh.addEdge("polyLine", block2.retEYEZE(), edges)
+
+    zTu = np.linspace(body[8,2], body[9,2], nPointsForEdge)
+    yTu = [y(0, zz, hLoaf, rLoaf1, rLoaf2) for zz in zTu]
+    edges = []
+    for yInd in range(len(yTu)):
+        edges.append([0, yTu[yInd], zTu[yInd]])
+    fvMesh.addEdge("polyLine", block2.retEX0YE(), edges)
+
+    # vertices
+    vertices = [
+            [body[3,0], body[3,1], body[3,2]],
+            [body[2,0], body[2,1], body[2,2]],
+            [body[6,0], body[6,1], body[6,2]],
+            [body[7,0], body[7,1], body[7,2]],
+            [body[12,0], body[12,1], body[12,2]],
+            [body[13,0], body[13,1], body[13,2]],
+            [body[11,0], body[11,1], body[11,2]],
+            [body[9,0], body[9,1], body[9,2]],
+        ]
+
+    # neighbouring blocks
+    neighbours = []
+
+    # number of cells
+    # nCX = int(round(abs(dy)/dX))
+    # nCY2 = int(round(abs(rLoaf1-rInY)/dY))
+    # nCZ2 = int(round(abs(dy)/dZ))
+    nCells = [nCX, nCY, nCY2]
+
+    # grading
+    grading = [grX, grY, grZ]
+
+    # create the block
+    block3 = fvMesh.addBlock(vertices, neighbours, nCells, grading)
+
+    zTu = np.linspace(body[12,2], body[13,2], nPointsForEdge)
+    xTu = [x(0, zz, hLoaf, rLoaf1, rLoaf2) for zz in zTu]
+    edges = []
+    for yInd in range(len(xTu)):
+        edges.append([xTu[yInd], 0, zTu[yInd]])
+    fvMesh.addEdge("polyLine", block3.retEY0ZE(), edges)
+
+    zTu = np.linspace(body[12,2], body[9,2], nPointsForEdge)
+    yTu = [y(0, zz, hLoaf, rLoaf1, rLoaf2) for zz in zTu]
+    edges = []
+    for yInd in range(len(yTu)):
+        edges.append([0, yTu[yInd], zTu[yInd]])
+    fvMesh.addEdge("polyLine", block3.retEX0ZE(), edges)
+
+    # vertices
+    vertices = [
+            [body[1,0], body[1,1], body[1,2]],
+            [body[14,0], body[14,1], body[14,2]],
+            [body[10,0], body[10,1], body[10,2]],
+            [body[5,0], body[5,1], body[5,2]],
+            [body[2,0], body[2,1], body[2,2]],
+            [body[13,0], body[13,1], body[13,2]],
+            [body[11,0], body[11,1], body[11,2]],
+            [body[6,0], body[6,1], body[6,2]],
+        ]
+
+    # neighbouring blocks
+    neighbours = []
+
+    # number of cells
+    # nCX = int(round(abs(hLoaf-rInX)/dX))
+    # nCY2 = int(round(abs(rLoaf1-rInY)/dY))
+    # nCZ2 = int(round(abs(dy)/dZ))
+    nCells = [nCY2, nCY, nCZ]
+
+    # grading
+    grading = [grX, grY, grZ]
+
+    # create the block
+    block4 = fvMesh.addBlock(vertices, neighbours, nCells, grading)
+
+    yTu = np.linspace(body[14,1], body[10,1], nPointsForEdge)
+    xTu = [x(yy, 0, hLoaf, rLoaf1, rLoaf2) for yy in yTu]
+    edges = []
+    for yInd in range(len(yTu)):
+        edges.append([xTu[yInd], yTu[yInd], 0])
+    fvMesh.addEdge("polyLine", block4.retEXEZ0(), edges)
+
+    zTu = np.linspace(body[14,2], body[13,2], nPointsForEdge)
+    xTu = [x(0, zz, hLoaf, rLoaf1, rLoaf2) for zz in zTu]
+    edges = []
+    for yInd in range(len(xTu)):
+        edges.append([xTu[yInd], 0, zTu[yInd]])
+    fvMesh.addEdge("polyLine", block4.retEXEY0(), edges)
+
+    # PATCHES ###
+    # -- inlet
+    # inletDown = list()
+    # inletDown.append(firstDown.retFYZ0())
+    # fvMesh.addPatch("inlet", "wall", inletDown)
+
+    # # -- outlet
+    # outlet = list()
+    # outlet.append(firstDown.retFYZE())
+    # fvMesh.addPatch("outlet", "wall", outlet)
+
+    sides = list()
+    # sides.append(block2.retFXY0())
+    sides.append(block2.retFXZE())
+    sides.append(block3.retFXYE())
+    sides.append(block4.retFYZE())
+    fvMesh.addPatch("sides", "patch", sides)
+
+    symmetry = list()
+    symmetry.append(block1.retFXY0())
+    symmetry.append(block1.retFXZ0())
+    symmetry.append(block4.retFXZ0())
+    symmetry.append(block3.retFXZ0())
+    symmetry.append(block2.retFXY0())
+    symmetry.append(block4.retFXY0())
+    # sides.append(firstDown.retFXZE())
+    # sides.append(firstDown.retFXY0())
+    # sides.append(firstDown.retFYZE())
+    # sides.append(firstDown.retFXYE())
+    # # sides.append(firstDown.retFYZ0())
+    # # fvMesh.addPatch("sides", "patch", sides)
+    fvMesh.addPatch("symmetryPatch", "symmetry", symmetry)
+    
+    bottom = list()
+    bottom.append(block1.retFYZ0())
+    bottom.append(block2.retFYZ0())
+    bottom.append(block3.retFYZ0())
+    fvMesh.addPatch("bottom", "wall", bottom)
+    
+    # walls = list()
+    # fvMesh.addPatch("walls", "wall", walls)
+
+    ### WRITE ###
+    fvMesh.writeBMD("%s/system/" % baseCase.dir)
