@@ -16,3 +16,6 @@ tutorials/*/all*
 *__pycache__*
 
 docs/doxygen/doxygen/*
+
+pyCtrlScripts/optimizePars.py
+pyCtrlScripts/*Opt.py
