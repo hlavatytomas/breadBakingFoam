@@ -42,4 +42,8 @@ boundaryField
             outOfBounds warn;
         }
 	}
+    "(wedgeZ0|wedgeZE)"
+	{
+		type wedge;
+	}
 }

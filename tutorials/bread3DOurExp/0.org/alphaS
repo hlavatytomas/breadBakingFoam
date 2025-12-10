@@ -16,7 +16,7 @@ FoamFile
 
 dimensions      [0 0 0 0 0 0 0];
 
-internalField   uniform 0.390299776;
+internalField   uniform 0.483;
 
 boundaryField
 {
@@ -29,6 +29,10 @@ boundaryField
   {
     type  symmetry;
   }
+  "(wedgeZ0|wedgeZE)"
+	{
+		type wedge;
+	}
 }
 
 // ************************************************************************* //

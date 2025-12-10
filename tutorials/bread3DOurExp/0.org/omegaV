@@ -41,11 +41,16 @@ boundaryField
             outOfBounds warn;
         }
     }
+    "(wedgeZ0|wedgeZE)"
+	{
+		type wedge;
+	}
 
     bottom
     {
+        // type zeroGradient;
         type breadOmegaVMixed;
-        kM               3e-4; // -- heat transfer coefficient
+        kM               1e-5; // -- heat transfer coefficient
 
         // -- mixed BC mandatory entires
         refValue        uniform 7.7e-3;

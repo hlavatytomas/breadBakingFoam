@@ -450,7 +450,7 @@ def y(x, z, hLoaf, rLoaf1, rLoaf2):
 def x(y, z, hLoaf, rLoaf1, rLoaf2):
     return ((1 - z**2 / rLoaf2**2 - y**2 / rLoaf1**2) * hLoaf**2)**0.5
 
-def prep3DMeshOurExp(rLoaf1, rLoaf2, hLoaf, dX, dY, dZ, grX, grY, grZ, baseCase):
+def prep3DMeshOurExp(rLoaf1, rLoaf2, hLoaf, dX, dY, dZ, grX, grY, grZ, baseCase, for2DExtrude=False):
     # -- preparation of the blockMeshDictFile for geometry generation
     fvMesh = mesh()
 
@@ -664,20 +664,40 @@ def prep3DMeshOurExp(rLoaf1, rLoaf2, hLoaf, dX, dY, dZ, grX, grY, grZ, baseCase)
     sides.append(block4.retFYZE())
     fvMesh.addPatch("sides", "patch", sides)
 
-    symmetry = list()
-    symmetry.append(block1.retFXY0())
-    symmetry.append(block1.retFXZ0())
-    symmetry.append(block4.retFXZ0())
-    symmetry.append(block3.retFXZ0())
-    symmetry.append(block2.retFXY0())
-    symmetry.append(block4.retFXY0())
-    # sides.append(firstDown.retFXZE())
-    # sides.append(firstDown.retFXY0())
-    # sides.append(firstDown.retFYZE())
-    # sides.append(firstDown.retFXYE())
-    # # sides.append(firstDown.retFYZ0())
-    # # fvMesh.addPatch("sides", "patch", sides)
-    fvMesh.addPatch("symmetryPatch", "symmetry", symmetry)
+    if not for2DExtrude:
+        symmetry = list()
+        symmetry.append(block1.retFXY0())
+        symmetry.append(block1.retFXZ0())
+        symmetry.append(block4.retFXZ0())
+        symmetry.append(block3.retFXZ0())
+        symmetry.append(block2.retFXY0())
+        symmetry.append(block4.retFXY0())
+        # sides.append(firstDown.retFXZE())
+        # sides.append(firstDown.retFXY0())
+        # sides.append(firstDown.retFYZE())
+        # sides.append(firstDown.retFXYE())
+        # # sides.append(firstDown.retFYZ0())
+        # # fvMesh.addPatch("sides", "patch", sides)
+        fvMesh.addPatch("symmetryPatch", "symmetry", symmetry)
+    else:
+        toExtrude = list()
+        toExtrude.append(block1.retFXY0())
+        toExtrude.append(block2.retFXY0())
+        toExtrude.append(block4.retFXY0())
+        # sides.append(firstDown.retFXZE())
+        # sides.append(firstDown.retFXY0())
+        # sides.append(firstDown.retFYZE())
+        # sides.append(firstDown.retFXYE())
+        # # sides.append(firstDown.retFYZ0())
+        fvMesh.addPatch("wedgeZ0", "patch", toExtrude)
+        # fvMesh.addPatch("toExtrude", "patch", toExtrude)
+        
+        symmetry = list()
+        symmetry.append(block1.retFXZ0())
+        symmetry.append(block4.retFXZ0())
+        symmetry.append(block3.retFXZ0())
+        fvMesh.addPatch("wedgeZE", "patch", symmetry)
+        # fvMesh.addPatch("symmetryPatch", "patch", symmetry)
     
     bottom = list()
     bottom.append(block1.retFYZ0())

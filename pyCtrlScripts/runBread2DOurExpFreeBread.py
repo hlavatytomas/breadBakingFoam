@@ -16,29 +16,33 @@ import re
 import matplotlib.pyplot as plt
 
 # CASE FOLDERS==========================================================
-baseCaseDir = '../tutorials/breadAx2DOurExp/' # -- base case for simulation
+baseCaseDir = '../tutorials/bread3DOurExp/' # -- base case for simulation
 # baseCaseDir = '../ZZ_cases/00_breads/breadAx2DOurExp/'
 # baseCaseDir = '../ZZ_cases/00_breads/fine_breadAx2DOurExp_lam0.44/'
-outFolder = '../ZZ_cases/00_breads/fine_breadAx2DOurExp_lam0.44/'
+# baseCaseDir = '../ZZ_cases/00_breads/bread3DOurExp/'
+baseCaseDir = '../ZZ_cases/00_breads/bread2DOurFree/'
+outFolder = '../ZZ_cases/00_breads/bread2DOurFree/'
 
 # WHAT SHOULD RUN=======================================================
 prepBlockMesh = True    # -- preparation of the blockMeshDict script
 makeGeom = True # -- creation of the geometry for computation
 runDynSim = True    # -- run simulation
-# prepBlockMesh = False    # -- preparation of the blockMeshDict script
-# makeGeom = False # -- creation of the geometry for computation
-# runDynSim = False    # -- run simulation
+prepBlockMesh = False    # -- preparation of the blockMeshDict script
+makeGeom = False # -- creation of the geometry for computation
+runDynSim = False    # -- run simulation
 runPostProcess = True   # -- run post-processing
+# runPostProcess = False   # -- run post-processing
 
 # DEFINE PARAMETERS=====================================================
 '''Geometry parameters'''
 mSStep = 0.1e-2 # -- aproximate computational cell size
-rLoaf = 5.8e-2  # -- loaf radius                
-hLoaf = 4.75e-2  # -- loaf height 
+rLoaf1 = 8.0e-2  # -- loaf radius                
+rLoaf2 = 8.0e-2  # -- loaf radius                
+hLoaf = 7e-2  # -- loaf height 
 
 '''Internal transport parameters'''
 # -- free volumetric difusivity of the water vapors in CO2 at 300 K
-DFree = 2.22e-6 
+DFree = 2.22e-5 
 
 # -- heat conductivity of the dough material with porosity 0, i.e. the 
 # -- absolute term in equation (5) in 
@@ -67,7 +71,7 @@ evCoef2 = 5.5
 
 # -- pre-exponential factor and Tm in CO2 generation kinetics 
 # -- in equation (32) in https://doi.org/10.1002/aic.10518
-R0 = 3.2e-4 
+R0 = 6e-4 
 Tm = 314
 Tm = 308
 
@@ -80,13 +84,13 @@ E = 12000   # -- Youngs modulus
 timeStep = 0.5  # -- computational time step
 plusTime1 = 870 # -- how long to run with deformation
 plusTime2 = 730 # -- how long to run without deformation
-writeInt = 30   # -- how often to write results
+writeInt = 10   # -- how often to write results
 nIter = 50  # -- number of iterations in each time step
 dynSolver = 'breadBakingFoam'   # -- used solver
 nCores = 4 # -- number of cores to run the simulation
 
 # -- relaxation factors
-DRelax = 0.1
+DRelax = 0.2
 DFinalRelax = 1
 
 '''Boundary conditions'''
@@ -96,46 +100,37 @@ kMTop = 0.01   # -- external mass transfer coeficient
 alphaG = 10 # -- external heat transfer coeficient 
 
 '''Post-processing'''
-fig, axs = plt.subplots(3, 1, figsize=(9, 16))  # figure with plots
+fig, axs = plt.subplots(3, 2, figsize=(18, 16))  # figure with plots
 
 # SCRIPT ITSELF (DO NOT EDIT)===========================================                       
 # -- create OpenFOAMCase object to change values in dictionaries
 baseCase = OpenFOAMCase()
 baseCase.loadOFCaseFromBaseCase(baseCaseDir)
 baseCase.changeOFCaseDir(outFolder)
-baseCase.copyBaseCase()
+# baseCase.copyBaseCase()
 
 # OTHER COMPUTATIONS====================================================
 dA = mSStep
 dX, dY, dZ = dA, dA, dA                                  
 x0 = y0 = z0 = 0.0      
 grX = grY = grZ = "1.0"
-grX = """(
-            (0.2 0.3 4)    // 20% y-dir, 30% cells, expansion = 4
-            (0.6 0.4 1)    // 60% y-dir, 40% cells, expansion = 1
-            (0.2 0.3 0.25) // 20% y-dir, 30% cells, expansion = 0.25 (1/4)
-        )"""
-grY = """(
-            (0.8 0.7 1)    // 60% y-dir, 40% cells, expansion = 1
-            (0.2 0.3 0.25) // 20% y-dir, 30% cells, expansion = 0.25 (1/4)
-        )"""
 
 # -- prepare blockMeshDict using luckas python class
 if prepBlockMesh:
-    prep2DMeshOurExp(rLoaf, hLoaf, x0, y0, z0, dA, dX, dY, dZ, grX, grY, grZ, baseCase)
+    prep3DMeshOurExp(rLoaf1, rLoaf2, hLoaf, dX, dY, dZ, grX, grY, grZ, baseCase, for2DExtrude=True)
 
 # CHANGE THE PARAMETERS IN OPENFOAM DICTIONARIES========================
 # 1) BOUNDARY CONDITIONS
 # -- change in tutorial case
-baseCase.setParameters(
-    [
-        ['0.org/omegaV', 'kM', str(kMSides), 'sides'],
-        ['0.org/omegaV', 'kM', str(kMBottom), 'bottom'],
-        ['0.org/omegaV', 'kM', str(kMTop), 'top'],
-        ['0.org/pG', 'kM', str(kMSides), 'sides'],
-        ['0.org/pG', 'kM', str(kMBottom), 'bottom'],
-    ]
-)
+# baseCase.setParameters(
+#     [
+#         ['0.org/omegaV', 'kM', str(kMSides), 'sides'],
+#         ['0.org/omegaV', 'kM', str(kMBottom), 'bottom'],
+#         ['0.org/omegaV', 'kM', str(kMTop), 'top'],
+#         ['0.org/pG', 'kM', str(kMSides), 'sides'],
+#         ['0.org/pG', 'kM', str(kMBottom), 'bottom'],
+#     ]
+# )
 
 # 2) constant/transportProperties
 baseCase.setParameters(
@@ -204,6 +199,7 @@ if makeGeom:
         [
             'chmod 755 ./* -R',
             'blockMesh > log.blockMesh',
+            'extrudeMesh > log.extrudeMesh',
             'rm -rf 0',
             'cp -r 0.org 0',
             'paraFoam -touch',
@@ -255,23 +251,20 @@ if runDynSim:
 # POST-PROCESSING=======================================================
 if runPostProcess:
     # -- load the experimental data
-    TExpPoint2 = np.loadtxt(baseCaseDir + 'ZZ_dataForPostProcessing/exp_ourExp_5.dat', skiprows=1)
-    TExpPoint3 = np.loadtxt(baseCaseDir + 'ZZ_dataForPostProcessing/exp_ourExp_6.dat', skiprows=1)
-    TExpPoint1 = np.loadtxt(baseCaseDir + 'ZZ_dataForPostProcessing/exp_ourExp_7.dat', skiprows=1)
-    DExp = np.loadtxt(baseCaseDir + 'ZZ_dataForPostProcessing/exp_ourExp_D.dat', skiprows=1)
-    moistureExp = np.loadtxt(baseCaseDir + 'ZZ_dataForPostProcessing/exp_ourExp_moisture.dat', skiprows=1)
+    expData = np.loadtxt(baseCaseDir + 'ZZ_dataForPostProcessing/exp_all.dat', skiprows=1)
+    expData2 = np.loadtxt(baseCaseDir + 'ZZ_dataForPostProcessing/exp_all_2.dat', skiprows=1)
     
     # -- run post-processing tasks
     if nCores == 1:
         baseCase.updateTimes()
         baseCase.runCommands(
             [
-                'rm -rf 0',
                 'postProcess -func "probeOur" -dict system/probeOur > log.postProcess',
                 'TLFProbe -point "(0.013 0.041 0)" > log.TPoint1',
                 'TLFProbe -point "(0.035 1e-4 0)" > log.TPoint2',
                 'TLFProbe -point "(0.016 1e-4 0)" > log.TPoint3',
                 'TLFProbe -point "(0.028 0.021 0)" > log.TPoint4',
+                'rm -rf 0',
                 'intMoisture > log.intMoisture',
             ]
         )
@@ -281,10 +274,10 @@ if runPostProcess:
             [
                 'rm -rf processor*/0',
                 'foamJob -parallel -screen postProcess -func "probeOur" -dict system/probeOur > log.postProcess',
-                'foamJob -parallel -screen TLFProbe -point "(0.013 0.041 0)" > log.TPoint1',
-                'foamJob -parallel -screen TLFProbe -point "(0.035 1e-4 0)" > log.TPoint2',
-                'foamJob -parallel -screen TLFProbe -point "(0.016 1e-4 0)" > log.TPoint3',
-                'foamJob -parallel -screen TLFProbe -point "(0.028 0.021 0)" > log.TPoint4',
+                'foamJob -parallel -screen TLFProbe -point "(0.012 1e-4 0)" > log.TPoint6',
+                'foamJob -parallel -screen TLFProbe -point "(0.061 1e-3 0)" > log.TPoint7',
+                'foamJob -parallel -screen TLFProbe -point "(0.027 0.047 0)" > log.TPoint5',
+                'foamJob -parallel -screen TLFProbe -point "(0.032 0.041 0)" > log.TPoint8',
                 'foamJob -parallel -screen intMoisture > log.intMoisture',
             ]
         )
@@ -321,47 +314,75 @@ if runPostProcess:
     # probesT = np.loadtxt(baseCase.dir + '/postProcessing/probeZhang/%d/T'%latestTime, skiprows=3)
 
     # -- Load total moisture evolution 
-    TPoint1 = readDataFromLogFile("%s/log.TPoint1" %baseCase.dir)
-    TPoint2 = readDataFromLogFile("%s/log.TPoint2" %baseCase.dir)
-    TPoint3 = readDataFromLogFile("%s/log.TPoint3" %baseCase.dir)
-    TPoint4 = readDataFromLogFile("%s/log.TPoint4" %baseCase.dir)
+    TPoint6 = readDataFromLogFile("%s/log.TPoint6" %baseCase.dir)
+    TPoint7 = readDataFromLogFile("%s/log.TPoint7" %baseCase.dir)
+    TPoint5 = readDataFromLogFile("%s/log.TPoint5" %baseCase.dir)
+    TPoint8 = readDataFromLogFile("%s/log.TPoint8" %baseCase.dir)
     moistureSim = readDataFromLogFile("%s/log.intMoisture" %baseCase.dir)
 
 
     # -- Temperatures
-    axs[0].plot(TExpPoint1[:,-1],TExpPoint1[:,0], '--r',  label='exp. point 1')
-    axs[0].plot(TExpPoint2[:,-1],TExpPoint2[:,0], '--b',  label='exp. point 2')
-    axs[0].plot(TExpPoint3[:,-1],TExpPoint3[:,0], '--g',  label='exp. point 4')
+    axs[0,0].plot(expData[:,-2],expData[:,0], '--r',  label='exp. point 5')
+    axs[0,0].plot(expData[:,-2],expData[:,1], '--g',  label='exp. point 6')
+    axs[0,0].plot(expData[:,-2],expData[:,2], '--b',  label='exp. point 7')
+    axs[0,0].plot(expData[:,-2],expData[:,3], '--m',  label='exp. point 8')
+    axs[0,1].plot(expData2[:,-2],expData2[:,0], '--r',  label='exp. point 5')
+    axs[0,1].plot(expData2[:,-2],expData2[:,1], '--g',  label='exp. point 6')
+    # axs[0,1].plot(expData2[:,-2],expData2[:,2], '--b',  label='exp. point 7')
+    # axs[0,1].plot(expData2[:,-2],expData2[:,3], '--m',  label='exp. point 8')
+    # axs[0].plot(TExpPoint2[:,-1],TExpPoint2[:,0], '--b',  label='exp. point 2')
+    # axs[0].plot(TExpPoint3[:,-1],TExpPoint3[:,0], '--g',  label='exp. point 4')
     # axs[0].plot(TExpSurface[:,0],TExpSurface[:,1], 'xb', label='surface temperature experiment')
-    axs[0].plot(TPoint1[:,0] / 60, TPoint1[:,1] - 273, 'r', label='sim. point 1')
-    axs[0].plot(TPoint2[:,0] / 60, TPoint2[:,1] - 273, 'b', label='sim. point 2')
-    # axs[0].plot(TPoint3[:,0] / 60, TPoint3[:,1] - 273, 'g', label='sim. point 3')
-    axs[0].plot(TPoint4[:,0] / 60, TPoint4[:,1] - 273, 'g', label='sim. point 4')
+    axs[0,0].plot(TPoint5[:,0] / 60, TPoint5[:,1] - 273, 'r', label='sim. point 5')
+    axs[0,0].plot(TPoint6[:,0] / 60, TPoint6[:,1] - 273, 'g', label='sim. point 6')
+    axs[0,0].plot(TPoint7[:,0] / 60, TPoint7[:,1] - 273, 'b', label='sim. point 7')
+    axs[0,0].plot(TPoint8[:,0] / 60, TPoint8[:,1] - 273, 'm', label='sim. point 8')
+    axs[0,1].plot(TPoint5[:,0] / 60, TPoint5[:,1] - 273, 'r', label='sim. point 5')
+    axs[0,1].plot(TPoint6[:,0] / 60, TPoint6[:,1] - 273, 'g', label='sim. point 6')
+    axs[0,1].plot(TPoint7[:,0] / 60, TPoint7[:,1] - 273, 'b', label='sim. point 7')
+    axs[0,1].plot(TPoint8[:,0] / 60, TPoint8[:,1] - 273, 'm', label='sim. point 8')
     # axs[0].plot(probesT[:,0] / 60, probesT[:,2] - 273, 'b', label='center temperature simulation')
-    axs[0].set_xlabel("time (min)")
-    axs[0].set_ylabel("T (°C)")
-    axs[0].set_xlim(0, 28)
-    axs[0].set_title("Temperature evolution in the center and at the surface")
-    axs[0].legend()
+    axs[0,0].set_xlabel("time (min)")
+    axs[0,0].set_ylabel("T (°C)")
+    axs[0,0].set_ylim(20,120)
+    axs[0,0].set_xlim(0, 35)
+    axs[0,0].set_title("Temperature evolution in the center and at the surface")
+
+    axs[0,1].set_xlabel("time (min)")
+    axs[0,1].set_ylabel("T (°C)")
+    axs[0,1].set_ylim(20,120)
+    axs[0,1].set_xlim(0, 35)
+    axs[0,1].set_title("Temperature evolution in the center and at the surface")
+    axs[0,0].legend()
 
     # -- Moisture
-    axs[1].plot(moistureSim[:,0] / 60, moistureSim[:,1], 'b', label='simulation')
-    axs[1].plot(moistureExp[:,-1] , moistureExp[:,1], '--b', label='experiment')
-    axs[1].set_xlabel("time (min)")
-    axs[1].set_ylabel("total moisture content (-)")
-    axs[1].set_xlim(0,28)
-    axs[1].set_title("Total moisture content in the the bread")
-    axs[1].legend()
+    axs[1,0].plot(moistureSim[:,0] / 60, moistureSim[:,1], 'b', label='simulation')
+    axs[1,0].plot(expData[:,-2], expData[:,-1], '--b', label='experiment')
+    axs[1,0].set_xlabel("time (min)")
+    axs[1,0].set_ylabel("total moisture content (-)")
+    axs[1,0].set_ylim(0.35,0.56)
+    # axs[1].set_xlim(0,28)
+    axs[1,0].set_title("Total moisture content in the the bread")
+    axs[1,0].legend()
+
+    axs[1,1].plot(moistureSim[:,0] / 60, moistureSim[:,1], 'b', label='simulation')
+    axs[1,1].plot(expData2[:,-2], expData2[:,-1], '--b', label='experiment')
+    axs[1,1].set_xlabel("time (min)")
+    axs[1,1].set_ylabel("total moisture content (-)")
+    axs[1,1].set_ylim(0.35,0.56)
+    # axs[1].set_xlim(0,28)
+    axs[1,1].set_title("Total moisture content in the the bread")
+    axs[1,1].legend()
 
     # -- Displacement
-    axs[2].plot(TPoint1[:,0] / 60, D[:, 0, 0], 'b', label='simulation DX')
-    axs[2].plot(DExp[:,0] / 60, DExp[:,1]+1.75e-2, 'xb', label='experimental DX')
+    axs[2,0].plot(TPoint5[:,0] / 60, D[:, 0, 0], 'b', label='simulation DX')
+    # axs[2].plot(DExp[:,0] / 60, DExp[:,1]+1.75e-2, 'xb', label='experimental DX')
     # axs[2].plot(DExp[:,0] / 60, DExp[:,2], 'xb', label='experimental DY')
-    axs[2].set_xlabel("time (min)")
-    axs[2].set_ylabel("displacement in X and Y directions")
-    axs[2].set_xlim(0,15)
-    axs[2].set_title("Displecement of the bread in vertical (X) and horizontal (Y) directions")
-    axs[2].legend()
+    axs[2,0].set_xlabel("time (min)")
+    axs[2,0].set_ylabel("displacement in X and Y directions")
+    axs[2,0].set_xlim(0,35)
+    axs[2,0].set_title("Displecement of the bread in vertical (X) and horizontal (Y) directions")
+    axs[2,0].legend()
     fig.tight_layout()
 
     plt.savefig(baseCase.dir + 'postProcessingPlot.png')
