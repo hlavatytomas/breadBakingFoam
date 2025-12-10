@@ -1,5 +1,6 @@
-# Case description and setup
-This tutorial shows a two-dimensional internal simulation of the bread in the our laboratory oven. External transport is resolved by custom mixed boundary conditions. The tutorial is located in `tutorials/breadAx2D` and can be:
+# 2D our custom experiment
+## Case description and setup
+This tutorial shows a two-dimensional internal simulation of the bread in our laboratory oven. External transport is resolved by custom mixed boundary conditions. The tutorial is located in `tutorials/breadAx2D` and can be:
 1. run directly as prepared by `Allrun` script in `tutorials/breadAx2DOurExp` folder, or
 2. modified and run by `pyCtrlScripts/runBreadAx2DOurExp.py` control script.
 
@@ -10,7 +11,7 @@ The description of the solved equations and variables is in greater detail discu
 * `omegaV` - mass fraction of the water vapors in the gas, and
 * `D` - deformation vector. 
 
-## Geometry and computational mesh description
+### Geometry and computational mesh description
 Geometry is based on our custom experiments conducted in the laboratories at University of Chemistry and Technology. The two breads are simultaniously placed into two tin cans to measure both the temperature evolution at several different places in the bread and the bread weight. 
 
 <img alt="tutBreadCustomExpDescr" src="tutBreadCustomExpDescr.png" />
@@ -23,7 +24,7 @@ The geometry for the tutorial is taken as a simple wedge with four different bou
 
 <img alt="tutBreadCustomExpLength" src="tutBreadCustomExpLength.png" />
 
-## Boundary conditions
+### Boundary conditions
 For the wedge boundary, we prescribe standard OpenFOAM _wedge_ boundary condition for all the variables. For the mass transfer (`pG` and `omegaV` variables), we prepared custom Robin external mass transfer boundary conditions _breadPGMixed_ and _breadOmegaVMixed_, respectively. The boundary conditions can be changed similarly as in other OpenFOAM software in `0.org/` directory. The boundary condition for the bottom, side and top patches differ only in the external mass transfer coefficient `kM`. Furthermore, the temporal evolution of the water vapors in oven can be changed in `constant/omegaVInfTable` as standard OpenFOAM interpolation table.
 
 `0.org/omegaV`
@@ -141,7 +142,7 @@ top
 ```
 This boundary condition acts as solids4foam _solidTraction_ boundary condition with zero traction and pressure, until the `sidePos` in the horizontal dimension is reached by some face. Then, this face does not move anymore.  
 
-## Internal transfer parameters
+### Internal transfer parameters
 The parameters for the internal transfer in the bread can be changed directly in the `constant/transportProperties` and `constant/thermophysicalProperties` or in `'''Internal transport parameters'''` section of the control python script (`pyCtrlScripts/runBreadAx2DOurExp.py`).
 
 ```
@@ -169,7 +170,7 @@ rhoL = 1000  # -- liquid density
 
 `DFree` parameter sets up the free volumetric diffusivity of the water vapors in carbon dioxide. The temperature and composition dependence of the effective diffusivity is then calculated directly in the solver. `lambdaS` sets up the heat conductivity of the dough material with zero porosity, i.e. the absolute term in equation (5) in https://doi.org/10.1016/j.fbp.2008.04.002 that is used for calculation of the effective heat conductivity. Specific heat capacities and mass densities can be then changed by `Cp` and `rho` parameters.
 
-## Evaporation and fermentation
+### Evaporation and fermentation
 Evaporation is calculated using Hertz-Knudsen equation while the needed water activity is calculated using Oswin model with parameters measured in https://doi.org/10.1016/0260-8774(91)90020-S. Fermentation kinetics is taken directly from equation (32) in https://doi.org/10.1002/aic.10518. The parameters for all the relations for evaporation and fermentation evaluation can be changed in `constant/reactiveProperties` file or in `'''Evaporation and CO2 generation parameters'''` section of the control python script (`pyCtrlScripts/runBreadAx2DOurExp.py`).
 ```
 '''Evaporation and CO2 generation parameters'''
@@ -187,7 +188,7 @@ Tm = 314
 ```
 `kMPC` sets up the evaporation coefficient in the Hertz-Knudsen formula. `evCoef1` and `evCoef` are the coefficients for the Oswin model for water activity. Finally, `R0` and `Tm` are the pre-exponential factor and temperature of the fermentation maximum in CO2 generation kinetics.
 
-## Mechanical properties
+### Mechanical properties
 Bread Youngs modulus and Poisson ratio can be changed directly in `constant/mechanicalProperties` file or in `'''Mechanical properties'''` section of the control python script (`pyCtrlScripts/runBreadAx2DOurExp.py`).
 ```
 '''Mechanical properties'''
@@ -195,3 +196,35 @@ withDeformation = 1 # -- turn on (1) /off (0) deformation
 nu = 0.15   # -- Poisson ratio
 E = 12000   # -- Youngs modulus
 ```
+
+## Running the tutorial
+As written above, the tutorial can be either run directly by `Allrun` script in tutorial directory `tutorials/breadAx2DOurExp` or by control python script `pyCtrlScripts/runBreadAx2DOurExp.py` which allows further setup. 
+```
+# CASE FOLDERS==========================================================
+baseCaseDir = '../tutorials/breadAx2DOurExp/' # -- base case for simulation
+outFolder = '../ZZ_cases/00_breads/breadAx2DOurExp/'
+
+# WHAT SHOULD RUN=======================================================
+prepBlockMesh = True    # -- preparation of the blockMeshDict script
+makeGeom = True # -- creation of the geometry for computation
+runDynSim = True    # -- run simulation
+runPostProcess = True   # -- run post-processing
+```
+`baseCaseDir` sets up the tutorial directory, `outFolder` specifies path where the tutorial will be copied, modified and run. 
+
+### Parallel run
+The tutorial is prepared to run also in parallel. It is possible to run it by changing `nCores` parameter in `pyCtrlScripts/runBreadAx2DOurExp.py` to number higher than 1.
+
+## Post-processing
+### Prepared python post-processing
+For the post-processing, it is possible to use prepared `pyCtrlScripts/runBreadAx2DOurExp.py` script, which compares the results directly with the experimental data by the generation of the following figure. 
+
+<img alt="tutBreadAx2DOurExpPostProcess" src="tutBreadAx2DOurExpPostProcess.png" />
+
+The resulting post-processing figure consists of three plots. In the first of them the comparison of the temperature evolution in three different points for the simulation and experiment is depicted. Experimental data are loaded from `ZZ_dataForPostProcessing` directory in the tutorial. In the second plot, the total moisture content in the bread for the simulation and experiment is compared. Finally, in the third plot, the comparison of the simulation and experimental deformation at the bread top is compared.
+
+### Paraview post-processing
+To further examine the results, you can visualize them using paraview software. 
+1. run the `paraview` (in this description we use Paraview 5.12.1),
+2. open `runBreadAx2DOurExp.OpenFOAM` file, that was created during run of `Allrun` script or `pyCtrlScripts/runBreadAx2DOurExp.py`,
+3. select open data with `Open FOAM Reader`,
